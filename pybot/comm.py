@@ -5,8 +5,8 @@ import time
 import json
 from enum import Enum
 
-VVVVVV_CMD_TRAINING = ["../VVVVVV.exe", "-training"]
-VVVVVV_CMD = ["../VVVVVV.exe"]
+VVVVVV_CMD_TRAINING = ["../game/VVVVVV.exe", "-training"]
+VVVVVV_CMD = ["../game/VVVVVV.exe"]
 
 class ACTION(Enum):
     WAIT=0
