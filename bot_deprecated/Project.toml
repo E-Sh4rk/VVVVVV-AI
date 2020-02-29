@@ -1,0 +1,14 @@
+name = "VBot"
+uuid = "35d7aa76-1849-4b3b-ac41-46402f36bf86"
+authors = ["Mickael Laurent <esh4rk@gmail.com>"]
+version = "0.0.1"
+
+[deps]
+BSON = "fbb218c0-5317-5bc6-957e-2ee96dd4b1f0"
+CUDAapi = "3895d2a7-ec45-59b8-82bb-cfc6a382f9b3"
+Flux = "587475ba-b771-5e3f-ad9e-33799f191a9c"
+JSON = "682c06a0-de6a-54ab-a142-c8b1cf79cde6"
+Knet = "1902f260-5fb4-5aff-8c31-6271790ab950"
+Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
+ReinforcementLearning = "158674fc-8238-5cab-b5ba-03dfc80d1318"
+ReinforcementLearningEnvironments = "25e41dd2-4622-11e9-1641-f1adca772921"

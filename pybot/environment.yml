@@ -1,0 +1,9 @@
+name: vvvvvv-pybot
+channels:
+  - pytorch
+dependencies:
+  - plotly
+  - pytorch
+  - tqdm
+  - pip:
+    - opencv-python

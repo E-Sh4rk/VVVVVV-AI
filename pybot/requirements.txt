@@ -1,0 +1,4 @@
+opencv-python
+plotly
+torch
+tqdm

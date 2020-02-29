@@ -1,0 +1,15 @@
+=== CANONICAL ===
+
+Train new:
+python main.py --architecture "canonical" --enable-cudnn --memory "results/default/memory.bin" --checkpoint-interval 250000
+
+Resume:
+python main.py --architecture "canonical" --enable-cudnn --model "results/default/checkpoint.pth" --memory "results/default/memory.bin" --checkpoint-interval 250000 --learn-start 0
+
+=== CANONICAL - ===
+
+Train new:
+python main.py --architecture "canonical-" --hidden-size 256 --enable-cudnn --memory "results/default/memory.bin" --checkpoint-interval 250000
+
+Resume:
+python main.py --architecture "canonical-" --hidden-size 256 --enable-cudnn --model "results/default/checkpoint.pth" --memory "results/default/memory.bin" --checkpoint-interval 250000 --learn-start 0
