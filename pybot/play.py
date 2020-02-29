@@ -22,13 +22,17 @@ if USE_ENV_ENGINE:
     dqn = Agent(args, env)
     dqn.eval()
 
+    total_reward = 0
+    n = 0
     reward_sum = 0
     while True:
         action = dqn.act(state)
         (state,reward,done) = env.step(action)
         reward_sum += reward
         if done:
-            print(reward_sum)
+            total_reward += reward_sum
+            n += 1
+            print("Reward: %d\tMean reward: %.2f" % (reward_sum, total_reward / n))
             reward_sum = 0
             state = env.reset()
         if SHOW_MATRIX:
@@ -38,15 +42,10 @@ if USE_ENV_ENGINE:
 else:
     (io, pjson, state) = initialize_game(TRAINING)
     (pjson, state) = reset_game(io, state)
-    reward_sum = 0
     while True:
         (pjson, state) = next_step(io, pjson, ACTION.RIGHT)
         if state.terminal:
-            print(reward_sum)
-            reward_sum = 0
             (pjson, state) = reset_game(io, state)
-        else:
-            reward_sum += 1
         if SHOW_MATRIX:
             display_matrix(state.image)
         if SLEEP > 0:
