@@ -28,7 +28,7 @@ def in_collision(s1, s2):
     bottom = min(s1["y"] + s1["h"], s2["y"] + s2["h"])
     left = max(s1["x"], s2["x"])
     right = min(s1["x"] + s1["w"], s2["x"] + s2["w"])
-    return top <= bottom and left <= right
+    return top < bottom and left < right
 
 def compute_speed_of_projectile(previous_json, sprite):
     sprite["xs"] = 0
