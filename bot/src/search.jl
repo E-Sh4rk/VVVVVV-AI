@@ -1,5 +1,7 @@
 
-H = 90 # 3 seconds
+H = 60 # 2 seconds
+# H must not be too big, because the prediction become wrong after some time
+# due to the new projectiles that appear randomly in the game
 M = 1000
 
 ACTIONS = [wait, left, right]

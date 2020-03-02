@@ -1,8 +1,8 @@
 
 ===== SEARCH =====
 
-Horizon H = 90 (3s)
-Max number of simulations M = 100 000
+Horizon H = 60 (2s)
+Max number of simulations M = 1000
 Step S = H/log3(M)
 
 If many paths possible, heuristics on the final position to decide
@@ -11,6 +11,10 @@ If many paths possible, heuristics on the final position to decide
 If no path possible, try again with S-- (or S//2) and H=log3(M)*S
 
 Play the first move of the selected path for STEP frames.
+
+Note:
+H must not be too big, because the prediction become wrong after some time
+due to the new projectiles that appear randomly in the game
 
 ===== PHYSICS =====
 
