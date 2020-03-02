@@ -1,4 +1,4 @@
-
+include("simulation.jl")
 import JSON
 
 macro with_framerate(framerate, expr)
@@ -11,25 +11,7 @@ macro with_framerate(framerate, expr)
     end
 end
 
-## STATE AND PARSING
-
-struct GameObject
-    x
-    y
-    w
-    h
-    xs
-    ys
-end
-
-struct GameState
-    timer
-    terminal
-    tline
-    bline
-    player
-    projectiles
-end
+## PARSING
 
 function i2b(i)
     return i == 0 ? false : true
@@ -39,22 +21,23 @@ function json_to_game_object(json)
     return GameObject(json["x"], json["y"], json["w"], json["h"], 0, 0)
 end
 
-PLAYER_MAX_X_SPEED = 6
-PLAYER_X_JUMP = 320
+# PLAYER_MAX_X_SPEED = 6
+# PLAYER_X_JUMP = 320
 
-function compute_speed_of_player(player, previous_state)
+function compute_speed_of_player(player, previous_state, xs)
     if previous_state == nothing
-        return player
+        return GameObject(player.x, player.y, player.w, player.h, xs, 0)
     end
     ys = player.y - previous_state.player.y
-    xs = player.x - previous_state.player.x
-    if abs(xs) > PLAYER_MAX_X_SPEED
-        if xs > 0
-            xs -= PLAYER_X_JUMP
-        else
-            xs += PLAYER_X_JUMP
-        end
-    end
+    # xs = player.x - previous_state.player.x
+    # if abs(xs) > PLAYER_MAX_X_SPEED
+    #     if xs > 0
+    #         xs -= PLAYER_X_JUMP
+    #     else
+    #         xs += PLAYER_X_JUMP
+    #     end
+    # end
+    xs = apply_friction_x(xs)
     return GameObject(player.x, player.y, player.w, player.h, xs, ys)
 end
 
@@ -65,8 +48,6 @@ function in_collision(o1, o2)
     right = min(o1.x + o1.w, o2.x + o2.w)
     return top < bottom && left < right
 end
-
-PROJ_SPEED = 7
 
 function compute_speed_of_projectile(proj, previous_state)
     if previous_state == nothing
@@ -87,7 +68,7 @@ function compute_speed_of_projectile(proj, previous_state)
     return GameObject(proj.x, proj.y, proj.w, proj.h, xs, 0)
 end
 
-function parse_state(json, previous_state)
+function parse_state(json, previous_state, action::ACTION)
     # Game info
     timer = json["timer"]
     terminal = i2b(json["dead"]) || !i2b(json["playable"])
@@ -101,9 +82,16 @@ function parse_state(json, previous_state)
         tline = line1
         bline = line0
     end
+    # Move stack
+    if previous_state == nothing
+        (info, xs) = (GameInfo(0,0), 0)
+    else
+        (info, xs) =
+            process_input(previous_state.info, previous_state.player.xs, action)
+    end
     # Player
     player = json_to_game_object(json["player"])
-    player = compute_speed_of_player(player, previous_state)
+    player = compute_speed_of_player(player, previous_state, xs)
     # Projectiles
     projectiles = []
     for proj in json["proj"]
@@ -112,7 +100,7 @@ function parse_state(json, previous_state)
         push!(projectiles, p)
     end
 
-    return GameState(timer, terminal, tline, bline, player, projectiles)
+    return GameState(timer, terminal, tline, bline, player, projectiles, info)
 end
 
 ## COMMUNICATION
@@ -120,14 +108,13 @@ end
 VVVVVV_CMD_TRAINING = ["../game/VVVVVV.exe", "-training"]
 VVVVVV_CMD = ["../game/VVVVVV.exe"]
 
-@enum ACTION wait=1 left=2 right=3 suicide=4
 ACTION_MAP = [ "", "l", "r", "s" ]
 
 function send_move!(io, action::ACTION)
     println(io, ACTION_MAP[Int(action)])
 end
 
-function read_state!(io, previous_state)
+function read_state!(io, previous_state, action::ACTION)
     state = nothing
     while state == nothing
         line = strip(readline(io))
@@ -135,7 +122,7 @@ function read_state!(io, previous_state)
             send_move!(io, wait)
         elseif startswith(line, "{")
             json = JSON.parse(line)
-            state = parse_state(json, previous_state)
+            state = parse_state(json, previous_state, action)
         end
     end
     return state
@@ -143,7 +130,7 @@ end
 
 function next!(io, previous_state, action::ACTION)
     send_move!(io, action)
-    return read_state!(io, previous_state)
+    return read_state!(io, previous_state, action)
 end
 
 function reset!(io, state)

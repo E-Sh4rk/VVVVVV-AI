@@ -1,5 +1,5 @@
 
-include("game.jl")
+include("comm.jl")
 
 function main()
     println("VBot - Bot for the Super Gravitron")

@@ -1,0 +1,32 @@
+
+===== SEARCH =====
+
+Horizon H = 90 (3s)
+Max number of simulations M = 100 000
+Step S = H/log3(M)
+
+If many paths possible, heursitics on the final position to decide
+(how close the character is from a projectile?)
+
+If no path possible, try again with S-- and H=log3(M)*S
+
+Play the first move of the selected path for STEP frames.
+
+===== PHYSICS =====
+
+CX=6
+CY=2
+(coordinates in the game are IG_X = X-CX and IG_Y = Y-CY)
+
+See player_speed.cpp for info about the computation of velocity.
+
+-4 or less  ==> += 320		(IG_X <= -10)
+317 or more ==> -= 320		(IG_X > 310)
+
+Vertical movements:
+
+MAX: -10 / 10
+
+Arrived at 163: 0 -2 -5 -8 -10
+
+Arrived at 48:  0  2  5  8  10
