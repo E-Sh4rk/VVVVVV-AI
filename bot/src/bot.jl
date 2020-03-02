@@ -18,6 +18,10 @@ function main()
             state = next!(io, state, action)
             if DEBUG && !is_simulation_correct(sim_state, state)
                 println("S=$step")
+                state = next!(io, state, wait)
+                state = next!(io, state, wait)
+                state = next!(io, state, wait)
+                readline()
             end
             if state.terminal
                 state = reset!(io, state)
