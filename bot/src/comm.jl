@@ -1,4 +1,3 @@
-include("simulation.jl")
 import JSON
 
 macro with_framerate(framerate, expr)

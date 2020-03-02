@@ -13,12 +13,12 @@ struct GameInfo
 end
 
 struct GameObject
-    x
-    y
-    w
-    h
-    xs
-    ys
+    x::Int
+    y::Int
+    w::Int
+    h::Int
+    xs::Float32
+    ys::Float32
 end
 
 struct GameState
@@ -96,7 +96,7 @@ function compute_new_ys(state::GameState) # Also takes friction into account
 end
 
 function apply_speed_x(x, xs)
-    x = trunc(x - CX + xs)
+    x = trunc(Int, x - CX + xs)
     if x <= -10
         x += 320
     elseif x > 310
@@ -110,7 +110,7 @@ function player_proj_in_collision(player, proj)
     cy = proj.y + proj.h/2
     radius = (proj.w + proj.h) / 4
 
-    textX = min(max(cx, player.x), player.x + player.w)
+    testX = min(max(cx, player.x), player.x + player.w)
     testY = min(max(cy, player.y), player.y + player.h)
 
     distX = cx - testX
@@ -121,15 +121,16 @@ function player_proj_in_collision(player, proj)
 end
 
 function simulate_next(state::GameState, action::ACTION)
-    if state.terminal
-        return state
+    if state.terminal || action == suicide
+        return GameState(state.timer, true, state.tline, state.bline,
+            state.player, state.projectiles, state.info)
     end
     # Player
     (info, xs) = process_input(state.info, state.player.xs, action)
     xs = apply_friction_x(xs)
     ys = compute_new_ys(state)
     y = state.player.y + ys
-    x = apply_speed_x(state.player.x)
+    x = apply_speed_x(state.player.x, xs)
     player = GameObject(x, y, state.player.w, state.player.h, xs, ys)
     # Projectiles
     projectiles = []
@@ -152,6 +153,9 @@ function simulate_next(state::GameState, action::ACTION)
 end
 
 function evaluate_state(state::GameState)
+    if state.terminal
+        return -Inf32
+    end
     min_dist = Inf32
     pcx = state.player.x + state.player.w/2
     pcy = state.player.y + state.player.h/2
