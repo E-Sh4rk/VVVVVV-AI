@@ -40,25 +40,15 @@ function compute_speed_of_player(player, previous_state, xs)
     return GameObject(player.x, player.y, player.w, player.h, xs, ys)
 end
 
-function in_collision(o1, o2)
-    top = max(o1.y, o2.y)
-    bottom = min(o1.y + o1.h, o2.y + o2.h)
-    left = max(o1.x, o2.x)
-    right = min(o1.x + o1.w, o2.x + o2.w)
-    return top < bottom && left < right
-end
-
 function compute_speed_of_projectile(proj, previous_state)
     if previous_state == nothing
         return proj
     end
     xs = 0
     for p in previous_state.projectiles
-        if p.y == proj.y && in_collision(p, proj)
-            diff = proj.x - p.x
-            if sign(diff) == sign(p.xs)
-                xs = diff
-            end
+        if p.y == proj.y && (proj.x - p.x) == p.xs
+            xs = p.xs
+            break
         end
     end
     if xs == 0
