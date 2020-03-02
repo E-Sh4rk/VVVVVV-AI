@@ -5,6 +5,8 @@ H = 60 # 2 seconds
 # In particular, the initial step S should be <= 10 frames.
 M = 500
 
+# TODO: parallelize the search
+
 ACTIONS = [wait, left, right]
 N = length(ACTIONS)
 LM = log(N, M)

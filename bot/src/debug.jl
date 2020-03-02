@@ -36,9 +36,13 @@ function check_simulation(simulation::GameState, truth::GameState)
         if truth_proj == nothing
             println("The collision check seems to be broken.")
             (truth_proj,_) = nearest_projectile(truth)
-            (sim_proj,_) = nearest_projectile(simulation)
-            print_boxes(sim_proj, truth_proj)
+            print_object(truth_proj, "Projectile")
             print_object(simulation.player, "Player")
+            println("======= TRUTH =======")
+            for p in truth.projectiles
+                print_object(p, "Projectile")
+            end
+            println("======================")
         else
             (sim_proj,_) = nearest_projectile(simulation)
             if !are_game_objects_equivalent(sim_proj, truth_proj)
