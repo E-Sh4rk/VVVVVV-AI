@@ -1,6 +1,6 @@
 
 H = 90 # 3 seconds
-M = 1000 #100_000
+M = 1000
 
 ACTIONS = [wait, left, right]
 N = length(ACTIONS)
@@ -43,7 +43,7 @@ function search_best_action(state::GameState)
 
     action = search_best_action(state, H, S)
     while action == nothing && S > 1
-        S -= 1
+        S = S÷2
         println("Unable to find a solution... Try again with S=$S...")
         H = trunc(Int, LM*S)
         action = search_best_action(state, H, S)

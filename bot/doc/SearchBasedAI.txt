@@ -8,7 +8,7 @@ Step S = H/log3(M)
 If many paths possible, heuristics on the final position to decide
 (how close the character is from a projectile?)
 
-If no path possible, try again with S-- and H=log3(M)*S
+If no path possible, try again with S-- (or S//2) and H=log3(M)*S
 
 Play the first move of the selected path for STEP frames.
 

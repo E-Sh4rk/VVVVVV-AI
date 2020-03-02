@@ -25,7 +25,7 @@ end
 
 function compute_speed_of_player(player, previous_state, xs)
     if previous_state == nothing
-        return GameObject(player.x, player.y, player.w, player.h, xs, 0)
+        return GameObject(player.x, player.y, player.w, player.h, xs, INITIAL_YS)
     end
     ys = player.y - previous_state.player.y
     # xs = player.x - previous_state.player.x
@@ -139,6 +139,9 @@ function reset!(io, state)
     end
     while state.terminal
         state = next!(io, nothing, wait)
+    end
+    for i in 1:10 # In order to initialize the speeds correctly
+        state = next!(io, state, wait)
     end
     return state
 end

@@ -2,8 +2,11 @@
 PROJ_SPEED = 7
 
 X_FRICTION = 1.1f0
-X_MAX = 6f0
+XS_MAX = 6f0
 CX = 6
+INITIAL_YS = 0
+TOP_GRAVITY_CHANGE = 48
+BOTTOM_GRAVITY_CHANGE = 163
 
 @enum ACTION wait=1 left=2 right=3 suicide=4
 
@@ -68,7 +71,7 @@ function apply_friction_x(xs::Float32)
     elseif xs < 0f0
         xs += X_FRICTION
     end
-    xs = max(min(xs, X_MAX), -X_MAX)
+    xs = max(min(xs, XS_MAX), -XS_MAX)
     if abs(xs) < X_FRICTION
         xs = 0f0
     end
@@ -86,9 +89,9 @@ function compute_new_ys(state::GameState) # Also takes friction into account
         ys = sign(ys) * 10
     end
 
-    if state.player.y <= state.tline.y
+    if state.player.y <= TOP_GRAVITY_CHANGE
         ys = ys == 0 ? 2 : 0
-    elseif state.player.y + state.player.h > state.bline.y
+    elseif state.player.y >= BOTTOM_GRAVITY_CHANGE
         ys = ys == 0 ? -2 : 0
     end
 
