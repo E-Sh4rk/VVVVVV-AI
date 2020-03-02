@@ -150,3 +150,18 @@ function simulate_next(state::GameState, action::ACTION)
     return GameState(state.timer + 1, terminal, state.tline, state.bline,
         player, projectiles, info)
 end
+
+function evaluate_state(state::GameState)
+    min_dist = Inf32
+    pcx = state.player.x + state.player.w/2
+    pcy = state.player.y + state.player.h/2
+    for proj in state.projectiles
+        cx = proj.x + proj.w/2
+        cy = proj.y + proj.h/2
+        distX = pcx - cx
+        distY = pcy - cy
+        dist = distX*distX + distY*distY
+        min_dist = min(min_dist, dist)
+    end
+    return min_dist
+end

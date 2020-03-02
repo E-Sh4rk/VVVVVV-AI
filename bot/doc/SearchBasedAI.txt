@@ -5,7 +5,7 @@ Horizon H = 90 (3s)
 Max number of simulations M = 100 000
 Step S = H/log3(M)
 
-If many paths possible, heursitics on the final position to decide
+If many paths possible, heuristics on the final position to decide
 (how close the character is from a projectile?)
 
 If no path possible, try again with S-- and H=log3(M)*S
