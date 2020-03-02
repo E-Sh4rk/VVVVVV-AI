@@ -1,4 +1,6 @@
 
+# TODO: Diminush the horizon? It seems that newly created projectiles
+# reach the playground in ~12 frames only
 H = 60 # 2 seconds
 # H must not be too big, because the prediction become wrong after some time
 # due to the new projectiles that appear randomly in the game
@@ -40,19 +42,19 @@ function search_best_action(state::GameState, H::Int, S::Int)
     return max_a
 end
 
-function search_best_action(state::GameState)
+function search_best_action(state::GameState, DEBUG::Bool)
     S = trunc(Int, H/LM)
 
     action = search_best_action(state, H, S)
     while action == nothing && S > 1
         S = S÷2
-        println("Unable to find a solution... Try again with S=$S...")
         H = trunc(Int, LM*S)
+        DEBUG && println("Unable to find a solution... Try again with S=$S...")
         action = search_best_action(state, H, S)
     end
 
     if action == nothing
-        println("No solution.")
+        DEBUG && println("No solution.")
         return (wait, 1)
     end
     return (action, S)
