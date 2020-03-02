@@ -2,7 +2,7 @@
 H = 60 # 2 seconds
 # H must not be too big, because the prediction become wrong after some time
 # due to the new projectiles that appear randomly in the game
-M = 1000
+M = 500
 
 ACTIONS = [wait, left, right]
 N = length(ACTIONS)
