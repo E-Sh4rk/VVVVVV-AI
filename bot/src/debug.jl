@@ -6,9 +6,13 @@ end
 function print_boxes(simulation::GameObject, truth::GameObject)
     simx = simulation.x
     simy = simulation.y
+    simw = simulation.w
+    simh = simulation.h
     tx = truth.x
     ty = truth.y
-    println("Predicted: ($simx,$simy)\tTruth: ($tx,$ty)")
+    tw = truth.w
+    th = truth.h
+    println("Predicted: ($simx,$simy,$simw,$simh)\tTruth: ($tx,$ty,$tw,$th)")
 end
 
 function is_simulation_correct(simulation::GameState, truth::GameState)
@@ -18,9 +22,11 @@ function is_simulation_correct(simulation::GameState, truth::GameState)
         return false
     end
     if simulation.terminal
+        println("(The predicted game state is wrongly terminal)")
+        print_boxes(simulation.player, truth.player)
         return true
     elseif truth.terminal
-        println("The game state should be terminal!")
+        println("The predicted game state should be terminal!")
         truth_proj = nothing
         for proj in truth.projectiles
             if player_proj_in_collision(truth.player, proj)
@@ -33,13 +39,19 @@ function is_simulation_correct(simulation::GameState, truth::GameState)
             (truth_proj,_) = nearest_projectile(truth)
             (sim_proj,_) = nearest_projectile(simulation)
             print_boxes(sim_proj, truth_proj)
+            print_boxes(simulation.player, truth.player)
         else
             (sim_proj,_) = nearest_projectile(simulation)
             if !are_game_objects_equivalent(sim_proj, truth_proj)
                 println("No projectile at this position in the simulation.")
                 print_boxes(sim_proj, truth_proj)
+                n = length(simulation.projectiles)
+                m = length(truth.projectiles)
+                println("Projectiles in the simulation: $n\tTruth: $m")
             else
                 println("This line should not appear.")
+                print_boxes(sim_proj, truth_proj)
+                print_boxes(simulation.player, truth.player)
             end
         end
         return false

@@ -128,13 +128,7 @@ function simulate_next(state::GameState, action::ACTION)
         return GameState(state.timer, true, state.tline, state.bline,
             state.player, state.projectiles, state.info)
     end
-    # Player
-    (info, xs) = process_input(state.info, state.player.xs, action)
-    xs = apply_friction_x(xs)
-    ys = compute_new_ys(state)
-    y = state.player.y + ys
-    x = apply_speed_x(state.player.x, xs)
-    player = GameObject(x, y, state.player.w, state.player.h, xs, ys)
+
     # Projectiles
     projectiles = []
     for proj in state.projectiles
@@ -142,6 +136,15 @@ function simulate_next(state::GameState, action::ACTION)
             proj.w, proj.h, proj.xs, proj.ys)
         push!(projectiles, p)
     end
+
+    # Player
+    (info, xs) = process_input(state.info, state.player.xs, action)
+    xs = apply_friction_x(xs)
+    ys = compute_new_ys(state)
+    y = state.player.y + ys
+    x = apply_speed_x(state.player.x, xs)
+    player = GameObject(x, y, state.player.w, state.player.h, xs, ys)
+    
     # Collisions (terminal)
     terminal = false
     for proj in projectiles

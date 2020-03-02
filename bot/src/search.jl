@@ -49,7 +49,7 @@ function search_best_action(state::GameState, DEBUG::Bool)
     while action == nothing && S > 1
         S = S÷2
         H = trunc(Int, LM*S)
-        DEBUG && println("Unable to find a solution... Try again with S=$S...")
+        #DEBUG && println("Unable to find a solution... Try again with S=$S...")
         action = search_best_action(state, H, S)
     end
 
