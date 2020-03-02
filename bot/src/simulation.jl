@@ -123,12 +123,28 @@ function player_proj_in_collision(player, proj)
     return distance² <= radius*radius
 end
 
-function get_proj_in_collision(player, projectiles)
+function get_proj_in_collision_no_wrap(player, projectiles)
     res = nothing
     for proj in projectiles
         if player_proj_in_collision(player, proj)
             res = proj
             break
+        end
+    end
+    return res
+end
+
+function get_proj_in_collision(player, projectiles)
+    res = get_proj_in_collision_no_wrap(player, projectiles)
+    if res == nothing
+        if player.x - CX < 0
+            player = GameObject(player.x + 320, player.y, player.w, player.h,
+                player.xs, player.ys)
+            res = get_proj_in_collision_no_wrap(player, projectiles)
+        elseif player.x - CX > 300
+            player = GameObject(player.x - 320, player.y, player.w, player.h,
+                player.xs, player.ys)
+            res = get_proj_in_collision_no_wrap(player, projectiles)
         end
     end
     return res

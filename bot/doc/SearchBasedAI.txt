@@ -35,3 +35,7 @@ MAX: -10 / 10
 Arrived at 163: 0 -2 -5 -8 -10
 
 Arrived at 48:  0  2  5  8  10
+
+Collisions:
+
+Specificity when the player is on the sides. See collisions.cpp for more info.

@@ -20,7 +20,27 @@ function print_object(o::GameObject, label::String)
     println("$label: ($x,$y,$w,$h,$xs,$ys)")
 end
 
+function print_all_projectiles(simulation::GameState, truth::GameState)
+    if truth != nothing
+        println("======= TRUTH =======")
+        for p in truth.projectiles
+            print_object(p, "Projectile")
+        end
+    end
+    if simulation != nothing
+        println("===== SIMULATION =====")
+        for p in simulation.projectiles
+            print_object(p, "Projectile")
+        end
+    end
+    println("======================")
+end
+
+previous_truth = nothing
 function check_simulation(simulation::GameState, truth::GameState)
+    global previous_truth
+    prev = previous_truth
+    previous_truth = truth
     if !are_game_objects_equivalent(simulation.player, truth.player)
         println("Player position is wrong.")
         print_boxes(simulation.player, truth.player)
@@ -38,26 +58,14 @@ function check_simulation(simulation::GameState, truth::GameState)
             (truth_proj,_) = nearest_projectile(truth)
             print_object(truth_proj, "Projectile")
             print_object(simulation.player, "Player")
-            println("======= TRUTH =======")
-            for p in truth.projectiles
-                print_object(p, "Projectile")
-            end
-            println("======================")
+            print_all_projectiles(nothing, truth)
         else
             (sim_proj,_) = nearest_projectile(simulation)
             if !are_game_objects_equivalent(sim_proj, truth_proj)
                 println("No projectile at this position in the simulation.")
                 print_boxes(sim_proj, truth_proj)
                 print_object(simulation.player, "Player")
-                println("======= TRUTH =======")
-                for p in truth.projectiles
-                    print_object(p, "Projectile")
-                end
-                println("===== SIMULATION =====")
-                for p in simulation.projectiles
-                    print_object(p, "Projectile")
-                end
-                println("======================")
+                print_all_projectiles(simulation, truth)
             else
                 println("This line should not appear.")
                 print_object(sim_proj, "Projectile")
@@ -66,13 +74,24 @@ function check_simulation(simulation::GameState, truth::GameState)
         end
         return false
     end
-    # for i in 1:length(truth.projectiles)
-    #     ps = simulation.projectiles[i]
-    #     pt = truth.projectiles[i]
-    #     if !are_game_objects_equivalent(ps, pt)
-    #         println("Projectile position is wrong.")
-    #         return false
-    #     end
-    # end
+    for p in simulation.projectiles
+        if (p.x > 320 && p.xs > 0) || (p.x < 0 && p.xs < 0)
+            continue # The projetile may have been removed in the original game
+        end
+        found = false
+        for pt in truth.projectiles
+            if are_game_objects_equivalent(p, pt)
+                found = true
+                break
+            end
+        end
+        if !found
+            println("A simulated projectile has no equivalent in the truth.")
+            print_object(p, "Projectile")
+            print_all_projectiles(nothing, prev)
+            print_all_projectiles(simulation, truth)
+            return false
+        end
+    end
     return true
 end

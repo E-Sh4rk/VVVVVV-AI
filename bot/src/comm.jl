@@ -40,14 +40,16 @@ function compute_speed_of_player(player, previous_state, xs)
     return GameObject(player.x, player.y, player.w, player.h, xs, ys)
 end
 
-function compute_speed_of_projectile(proj, previous_state)
-    if previous_state == nothing
+function compute_speed_of_projectile!(proj, previous_projs)
+    if previous_projs == nothing
         return proj
     end
     xs = 0
-    for p in previous_state.projectiles
+    for i in 1:length(previous_projs)
+        p = previous_projs[i]
         if p.y == proj.y && (proj.x - p.x) == p.xs
             xs = p.xs
+            deleteat!(previous_projs, i)
             break
         end
     end
@@ -83,9 +85,11 @@ function parse_state(json, previous_state, action::ACTION)
     player = compute_speed_of_player(player, previous_state, xs)
     # Projectiles
     projectiles = []
+    previous_projs = previous_state == nothing ?
+        nothing : copy(previous_state.projectiles)
     for proj in json["proj"]
         p = json_to_game_object(proj)
-        p = compute_speed_of_projectile(p, previous_state)
+        p = compute_speed_of_projectile!(p, previous_projs)
         push!(projectiles, p)
     end
 
