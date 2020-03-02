@@ -27,13 +27,7 @@ function is_simulation_correct(simulation::GameState, truth::GameState)
         return true
     elseif truth.terminal
         println("The predicted game state should be terminal!")
-        truth_proj = nothing
-        for proj in truth.projectiles
-            if player_proj_in_collision(truth.player, proj)
-                truth_proj = proj
-                break
-            end
-        end
+        truth_proj = get_proj_in_collision(truth.player, truth.projectiles)
         if truth_proj == nothing
             println("The collision check seems to be broken.")
             (truth_proj,_) = nearest_projectile(truth)
@@ -45,6 +39,7 @@ function is_simulation_correct(simulation::GameState, truth::GameState)
             if !are_game_objects_equivalent(sim_proj, truth_proj)
                 println("No projectile at this position in the simulation.")
                 print_boxes(sim_proj, truth_proj)
+                print_boxes(simulation.player, truth.player)
                 n = length(simulation.projectiles)
                 m = length(truth.projectiles)
                 println("Projectiles in the simulation: $n\tTruth: $m")

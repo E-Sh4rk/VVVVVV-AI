@@ -123,6 +123,17 @@ function player_proj_in_collision(player, proj)
     return distance² <= radius*radius
 end
 
+function get_proj_in_collision(player, projectiles)
+    res = nothing
+    for proj in projectiles
+        if player_proj_in_collision(player, proj)
+            res = proj
+            break
+        end
+    end
+    return res
+end
+
 function simulate_next(state::GameState, action::ACTION)
     if state.terminal || action == suicide
         return GameState(state.timer, true, state.tline, state.bline,
@@ -144,15 +155,9 @@ function simulate_next(state::GameState, action::ACTION)
     y = state.player.y + ys
     x = apply_speed_x(state.player.x, xs)
     player = GameObject(x, y, state.player.w, state.player.h, xs, ys)
-    
+
     # Collisions (terminal)
-    terminal = false
-    for proj in projectiles
-        if player_proj_in_collision(player, proj)
-            terminal = true
-            break
-        end
-    end
+    terminal = get_proj_in_collision(player, projectiles) != nothing
 
     return GameState(state.timer + 1, terminal, state.tline, state.bline,
         player, projectiles, info)
