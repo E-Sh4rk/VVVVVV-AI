@@ -6,12 +6,6 @@ function are_game_objects_equivalent(o1::GameObject, o2::GameObject)
 end
 
 function is_simulation_correct(simulation::GameState, truth::GameState)
-    if simulation.terminal
-        return true
-    elseif truth.terminal
-        println("The game state should be terminal!")
-        return false
-    end
     if !are_game_objects_equivalent(simulation.player, truth.player)
         println("Player position is wrong.")
         simx = simulation.player.x
@@ -19,6 +13,12 @@ function is_simulation_correct(simulation::GameState, truth::GameState)
         tx = truth.player.x
         ty = truth.player.y
         println("Predicted: ($simx,$simy)\tTruth: ($tx,$ty)")
+        return false
+    end
+    if simulation.terminal
+        return true
+    elseif truth.terminal
+        println("The game state should be terminal!")
         return false
     end
     # for i in 1:length(truth.projectiles)
