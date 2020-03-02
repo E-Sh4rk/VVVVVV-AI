@@ -15,7 +15,12 @@ function print_boxes(simulation::GameObject, truth::GameObject)
     println("Predicted: ($simx,$simy,$simw,$simh)\tTruth: ($tx,$ty,$tw,$th)")
 end
 
-function is_simulation_correct(simulation::GameState, truth::GameState)
+function print_object(o::GameObject, label::String)
+    (x,y,w,h,xs,ys) = (o.x,o.y,o.w,o.h,o.xs,o.ys)
+    println("$label: ($x,$y,$w,$h,$xs,$ys)")
+end
+
+function check_simulation(simulation::GameState, truth::GameState)
     if !are_game_objects_equivalent(simulation.player, truth.player)
         println("Player position is wrong.")
         print_boxes(simulation.player, truth.player)
@@ -23,7 +28,7 @@ function is_simulation_correct(simulation::GameState, truth::GameState)
     end
     if simulation.terminal
         println("(The predicted game state is wrongly terminal)")
-        print_boxes(simulation.player, truth.player)
+        print_object(simulation.player, "Player")
         return true
     elseif truth.terminal
         println("The predicted game state should be terminal!")
@@ -33,20 +38,26 @@ function is_simulation_correct(simulation::GameState, truth::GameState)
             (truth_proj,_) = nearest_projectile(truth)
             (sim_proj,_) = nearest_projectile(simulation)
             print_boxes(sim_proj, truth_proj)
-            print_boxes(simulation.player, truth.player)
+            print_object(simulation.player, "Player")
         else
             (sim_proj,_) = nearest_projectile(simulation)
             if !are_game_objects_equivalent(sim_proj, truth_proj)
                 println("No projectile at this position in the simulation.")
                 print_boxes(sim_proj, truth_proj)
-                print_boxes(simulation.player, truth.player)
-                n = length(simulation.projectiles)
-                m = length(truth.projectiles)
-                println("Projectiles in the simulation: $n\tTruth: $m")
+                print_object(simulation.player, "Player")
+                println("======= TRUTH =======")
+                for p in truth.projectiles
+                    print_object(p, "Projectile")
+                end
+                println("===== SIMULATION =====")
+                for p in simulation.projectiles
+                    print_object(p, "Projectile")
+                end
+                println("======================")
             else
                 println("This line should not appear.")
-                print_boxes(sim_proj, truth_proj)
-                print_boxes(simulation.player, truth.player)
+                print_object(sim_proj, "Projectile")
+                print_object(simulation.player, "Player")
             end
         end
         return false

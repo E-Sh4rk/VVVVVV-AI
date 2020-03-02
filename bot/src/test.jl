@@ -13,7 +13,7 @@ function main()
         for i in 1:n
             predicted = simulate_next(state, action)
             state = next!(io, state, action)
-            if !is_simulation_correct(predicted, state)
+            if !check_simulation(predicted, state)
                 state = next!(io, state, wait)
                 state = next!(io, state, wait)
                 state = next!(io, state, wait)

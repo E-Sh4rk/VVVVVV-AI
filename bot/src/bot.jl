@@ -16,7 +16,7 @@ function main()
         for i in 1:step
             DEBUG && (sim_state = simulate_next(sim_state, action))
             state = next!(io, state, action)
-            if DEBUG && !is_simulation_correct(sim_state, state)
+            if DEBUG && !check_simulation(sim_state, state)
                 println("S=$step")
                 state = next!(io, state, wait)
                 state = next!(io, state, wait)

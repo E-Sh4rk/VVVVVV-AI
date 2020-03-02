@@ -1,9 +1,8 @@
-
-# TODO: Diminush the horizon? It seems that newly created projectiles
-# reach the playground in ~12 frames only
+# TODO: diminush H?
 H = 60 # 2 seconds
 # H must not be too big, because the prediction become wrong after some time
-# due to the new projectiles that appear randomly in the game
+# due to the new projectiles that appear randomly in the game.
+# In particular, the initial step S should be <= 10 frames.
 M = 500
 
 ACTIONS = [wait, left, right]
