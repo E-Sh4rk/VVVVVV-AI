@@ -47,8 +47,10 @@ function check_simulation(simulation::GameState, truth::GameState)
         return false
     end
     if simulation.terminal
-        println("(The predicted game state is wrongly terminal)")
-        print_object(simulation.player, "Player")
+        if !truth.terminal
+            println("(The predicted game state is wrongly terminal)")
+            print_object(simulation.player, "Player")
+        end
         return true
     elseif truth.terminal
         println("The predicted game state should be terminal!")
