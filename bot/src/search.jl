@@ -76,12 +76,9 @@ function search_best_action(state::GameState, DEBUG::Bool)
     step = nothing
     for S in S_all
         H = trunc(Int, LM*S)
-        r = search_best_action(state, H, S)
-        if r != nothing
-            action = r
-            step = S
-            break
-        end
+        action = search_best_action(state, H, S)
+        step = S
+        action != nothing && break
     end
 
     # Output
