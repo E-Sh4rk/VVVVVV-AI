@@ -236,6 +236,7 @@ function nearest_projectile(state::GameState)
     return (min_proj, min_dist)
 end
 
+# TODO: Improve it. Prefer being in the center of the screen.
 function evaluate_state(state::GameState)
     if state.terminal
         return -Inf32

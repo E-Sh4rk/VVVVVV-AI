@@ -108,11 +108,13 @@ function send_move!(io, action::ACTION)
     println(io, ACTION_MAP[Int(action)])
 end
 
-function send_move_many!(io, actions::Array{ACTION, 1})
+function send_move_many!(io, actions::Array{Any, 1})
+    length(actions) == 0 && return false
     for action in actions
         print(io, ACTION_MAP[Int(action)])
     end
     println(io)
+    return true
 end
 
 function read_state!(io, previous_state, action::ACTION)

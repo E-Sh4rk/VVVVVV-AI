@@ -2,7 +2,8 @@
 # H must not be too big, because the prediction become wrong after some time
 # due to the new projectiles that appear randomly in the game.
 # In particular, the initial step S should be <= 10 frames.
-H = 60 # 2 seconds
+# H = 60 # 2 seconds
+H = 42 # NOTE: H has been decreased because of the 3 frames prediction in bot.jl
 M = 1000
 
 ACTIONS = [wait, left, right]
