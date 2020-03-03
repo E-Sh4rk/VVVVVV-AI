@@ -16,13 +16,13 @@ function main()
     (io, state) = initialize_game(TRAINING)
     state = wait_for_new_game!(io, state)
     while true
-        (action, step) = search_best_action(state, DEBUG)
+        (actions, min_step) = search_best_actions(state, 1, DEBUG)
         DEBUG && (sim_state = state)
-        for i in 1:step
-            DEBUG && (sim_state = simulate_next(sim_state, action))
-            state = next!(io, state, action)
+        for i in 1:min_step
+            DEBUG && (sim_state = simulate_next(sim_state, actions[i]))
+            state = next!(io, state, actions[i])
             if DEBUG && !check_simulation(sim_state, state)
-                println("S=$step")
+                println("S=$min_step")
                 readline()
             end
             if state.terminal

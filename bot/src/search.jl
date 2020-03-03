@@ -9,13 +9,16 @@ ACTIONS = [wait, left, right]
 N = length(ACTIONS)
 LM = log(N, M)
 
-function evaluate_state_with_search(state::GameState, H::Int, S::Int, first_actions = ACTIONS)
+function search_best_actions(state::GameState, H::Int, S::Int)
     S = min(S, H)
-    if S <= 0 || state.terminal
-        return evaluate_state(state)
+    if state.terminal
+        return (-Inf32, nothing)
+    elseif S <= 0
+        return (evaluate_state(state), [])
     end
     max_v = -Inf32
-    for action in first_actions
+    max_a = nothing
+    for action in ACTIONS
         state_a = state
         for i in 1:S
             state_a = simulate_next(state_a, action)
@@ -23,32 +26,17 @@ function evaluate_state_with_search(state::GameState, H::Int, S::Int, first_acti
                 break
             end
         end
-        max_v = max(max_v, evaluate_state_with_search(state_a, H-S, S))
-    end
-    return max_v
-end
-
-function search_best_action(state::GameState, H::Int, S::Int)
-    n = length(ACTIONS)
-    results = Array{Any}(nothing, n)
-    # Threads.@threads for i in 1:n # NOTE: uncomment for a threaded search
-    for i in 1:n
-        results[i] = evaluate_state_with_search(state, H, S, [ACTIONS[i]])
-    end
-
-    max_a = nothing
-    max_v = -Inf32
-    for i in 1:n
-        if results[i] > max_v
-            max_v = results[i]
-            max_a = ACTIONS[i]
+        (res_v, res_a) = search_best_actions(state_a, H-S, S)
+        if res_a != nothing && res_v > max_v
+            max_v = res_v
+            push!(res_a, (action, S))
+            max_a = res_a
         end
     end
-
-    return max_a
+    return (max_v, max_a)
 end
 
-function search_best_action(state::GameState, DEBUG::Bool)
+function search_best_actions(state::GameState, min_nb_actions::Int, DEBUG::Bool)
     S = ceil(Int, H/LM)
     # We plan the different tasks
     S_all = [S]
@@ -64,16 +52,14 @@ function search_best_action(state::GameState, DEBUG::Bool)
     #     local S, H
     #     S = S_all[i]
     #     H = trunc(Int, LM*S)
-    #     R_all[i] = @spawn search_best_action(state, H, S)
+    #     R_all[i] = @spawn search_best_actions(state, H, S)
     # end
     # # We wait for the result
-    # action = nothing
-    # step = nothing
-    # for i in 1:n
-    #     r = fetch(R_all[i])
-    #     if action == nothing
-    #         action = r
-    #         step = S_all[i]
+    # actions = nothing
+    # for rf in R_all
+    #     (_, r) = fetch(rf)
+    #     if actions == nothing
+    #         actions = r
     #     end
     # end
 
@@ -83,32 +69,47 @@ function search_best_action(state::GameState, DEBUG::Bool)
     #     local S, H
     #     S = S_all[i]
     #     H = trunc(Int, LM*S)
-    #     R_all[i] = search_best_action(state, H, S)
+    #     (_, r) = search_best_actions(state, H, S)
+    #     R_all[i] = r
     # end
-    # action = nothing
-    # step = nothing
-    # for i in 1:n
-    #     if action == nothing
-    #         action = R_all[i]
-    #         step = S_all[i]
+    # actions = nothing
+    # for r in R_all
+    #     if actions == nothing
+    #         actions = r
     #         break
     #     end
     # end
 
     # SEQUENTIAL (lazy)
-    action = nothing
-    step = nothing
+    actions = nothing
     for S in S_all
         H = trunc(Int, LM*S)
-        action = search_best_action(state, H, S)
-        step = S
-        action != nothing && break
+        (_, actions) = search_best_actions(state, H, S)
+        actions != nothing && break
     end
 
     # Output
-    if action == nothing
+    if actions == nothing
         DEBUG && println("No solution.")
-        return (wait, 1)
+        actions = [(wait, 1)]
     end
-    return (action, step)
+    (_, min_step) = actions[end]
+    nb_actions = max(min_nb_actions, min_step)
+    res = Array{Any}(nothing, nb_actions)
+    for i in 1:nb_actions
+        if length(actions) == 0
+            res[i] = res[i-1]
+            DEBUG && println("Solution too short. Completing with the last move...")
+        else
+            (a,s) = actions[end]
+            s -= 1
+            if s <= 0
+                pop!(actions)
+            else
+                actions[end] = (a,s)
+            end
+            res[i] = a
+        end
+    end
+    return (res, min_step)
 end
