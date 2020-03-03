@@ -1,9 +1,9 @@
 # TODO: diminush H?
-H = 60 # 2 seconds
 # H must not be too big, because the prediction become wrong after some time
 # due to the new projectiles that appear randomly in the game.
 # In particular, the initial step S should be <= 10 frames.
-M = 500
+H = 60 # 2 seconds
+M = 1000
 
 # TODO: parallelize the search
 
@@ -44,7 +44,7 @@ function search_best_action(state::GameState, H::Int, S::Int)
 end
 
 function search_best_action(state::GameState, DEBUG::Bool)
-    S = trunc(Int, H/LM)
+    S = ceil(Int, H/LM)
 
     action = search_best_action(state, H, S)
     while action == nothing && S > 1
