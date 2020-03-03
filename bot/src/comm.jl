@@ -64,15 +64,16 @@ function parse_state(json, previous_state, action::ACTION)
     timer = json["timer"]
     terminal = i2b(json["dead"]) || !i2b(json["playable"])
     # Lines
-    line0 = json_to_game_object(json["lines"][1])
-    line1 = json_to_game_object(json["lines"][2])
-    if line0.y <= line1.y
-        tline = line0
-        bline = line1
-    else
-        tline = line1
-        bline = line0
-    end
+    # line0 = json_to_game_object(json["lines"][1])
+    # line1 = json_to_game_object(json["lines"][2])
+    # if line0.y <= line1.y
+    #     tline = line0
+    #     bline = line1
+    # else
+    #     tline = line1
+    #     bline = line0
+    # end
+    intermission = json["playable"] == 2
     # Move stack
     if previous_state == nothing
         (info, xs) = (GameInfo(0,0), 0)
@@ -93,7 +94,7 @@ function parse_state(json, previous_state, action::ACTION)
         push!(projectiles, p)
     end
 
-    return GameState(timer, terminal, tline, bline, player, projectiles, info)
+    return GameState(timer, terminal, intermission, player, projectiles, info)
 end
 
 ## COMMUNICATION

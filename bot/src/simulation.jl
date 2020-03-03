@@ -9,6 +9,8 @@ CX = 6
 INITIAL_YS = 0
 TOP_GRAVITY_CHANGE = 48
 BOTTOM_GRAVITY_CHANGE = 163
+TOP_GRAVITY_CHANGE_INTERMISSION = 53
+BOTTOM_GRAVITY_CHANGE_INTERMISSION = 161
 
 @enum ACTION wait=1 left=2 right=3 suicide=4
 
@@ -29,8 +31,7 @@ end
 struct GameState
     timer
     terminal
-    tline
-    bline
+    intermission
     player
     projectiles
     info
@@ -83,18 +84,44 @@ end
 function compute_new_ys(state::GameState) # Also takes friction into account
     ys = state.player.ys
 
-    if abs(ys) == 2
-        ys = sign(ys) * 5
-    elseif abs(ys) == 5
-        ys = sign(ys) * 8
-    elseif abs(ys) == 8
-        ys = sign(ys) * 10
-    end
+    if state.intermission
 
-    if state.player.y <= TOP_GRAVITY_CHANGE
-        ys = ys == 0 ? 2 : 0
-    elseif state.player.y >= BOTTOM_GRAVITY_CHANGE
-        ys = ys == 0 ? -2 : 0
+        if ys == -10 && state.player.y <= TOP_GRAVITY_CHANGE_INTERMISSION
+            ys = -2
+        elseif ys == 10 && state.player.y >= BOTTOM_GRAVITY_CHANGE_INTERMISSION
+            ys = 1
+        elseif ys == 1 && state.player.y >= BOTTOM_GRAVITY_CHANGE_INTERMISSION
+            ys = -1
+        elseif ys == 1
+            ys = 3
+        elseif ys == 3
+            ys = 6
+        elseif ys == 6
+            ys = 9
+        elseif ys == 9
+            ys = 10
+        elseif ys == -1
+            ys = -4
+        elseif ys == -4
+            ys = -7
+        elseif ys == -7
+            ys = -10
+        end
+
+    else
+
+        if state.player.y <= TOP_GRAVITY_CHANGE
+            ys = ys == 0 ? 2 : 0
+        elseif state.player.y >= BOTTOM_GRAVITY_CHANGE
+            ys = ys == 0 ? -2 : 0
+        elseif abs(ys) == 2
+            ys = sign(ys) * 5
+        elseif abs(ys) == 5
+            ys = sign(ys) * 8
+        elseif abs(ys) == 8
+            ys = sign(ys) * 10
+        end
+
     end
 
     return ys
@@ -154,7 +181,7 @@ end
 
 function simulate_next(state::GameState, action::ACTION)
     if state.terminal || action == suicide
-        return GameState(state.timer, true, state.tline, state.bline,
+        return GameState(state.timer, true, state.intermission,
             state.player, state.projectiles, state.info)
     end
 
@@ -177,7 +204,7 @@ function simulate_next(state::GameState, action::ACTION)
     # Collisions (terminal)
     terminal = get_proj_in_collision(player, projectiles) != nothing
 
-    return GameState(state.timer + 1, terminal, state.tline, state.bline,
+    return GameState(state.timer + 1, terminal, state.intermission,
         player, projectiles, info)
 end
 
