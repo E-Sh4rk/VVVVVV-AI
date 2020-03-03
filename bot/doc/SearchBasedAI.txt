@@ -39,3 +39,15 @@ Arrived at 48:  0  2  5  8  10
 Collisions:
 
 Specificity when the player is on the sides. See collisions.cpp for more info.
+
+===== GRAVITRON (intermission) =====
+
+How to detect intermission Gravitron? Lines have different widths.
+
+Vertical movements:
+
+MAX: -10 / 10
+
+Arrived at >=161 (maybe 160?):  1  -1  -4  -7  -10
+
+Arrived at <=53:  -2  1  3  6  9  10

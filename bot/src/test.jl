@@ -6,7 +6,7 @@ function main()
     println("Simulated Physics Testing")
 
     (io, state) = initialize_game(true)
-    state = reset!(io, state)
+    state = wait_for_new_game!(io, state)
     while true
         action = rand([wait, left, right])
         n = rand(1:25)

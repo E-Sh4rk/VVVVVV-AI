@@ -126,11 +126,7 @@ function next!(io, previous_state, action::ACTION)
     return read_state!(io, previous_state, action)
 end
 
-function reset!(io, state)
-    if !state.terminal
-        state = next!(io, nothing, suicide)
-        @assert state.terminal
-    end
+function wait_for_new_game!(io, state)
     while state.terminal
         state = next!(io, nothing, wait)
     end
@@ -138,6 +134,14 @@ function reset!(io, state)
         state = next!(io, state, wait)
     end
     return state
+end
+
+function reset!(io, state)
+    if !state.terminal
+        state = next!(io, nothing, suicide)
+        @assert state.terminal
+    end
+    return wait_for_new_game!(io, state)
 end
 
 function initialize_game(training)
