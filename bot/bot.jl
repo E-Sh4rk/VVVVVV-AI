@@ -8,7 +8,7 @@ include("src/search.jl")
 include("src/debug.jl")
 
 DEBUG = true
-TRAINING = false
+TRAINING = true
 
 function main()
     println("VBot - Bot for the Super Gravitron")

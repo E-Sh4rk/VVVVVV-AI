@@ -61,6 +61,7 @@ function search_best_action(state::GameState, DEBUG::Bool)
     # # We launch them on the workers
     # R_all = Array{Any}(nothing, n)
     # for i in 1:n
+    #     local S, H
     #     S = S_all[i]
     #     H = trunc(Int, LM*S)
     #     R_all[i] = @spawn search_best_action(state, H, S)
@@ -76,7 +77,25 @@ function search_best_action(state::GameState, DEBUG::Bool)
     #     end
     # end
 
-    # SEQUENTIAL
+    # THREADED
+    # R_all = Array{Any}(nothing, n)
+    # Threads.@threads for i in 1:n
+    #     local S, H
+    #     S = S_all[i]
+    #     H = trunc(Int, LM*S)
+    #     R_all[i] = search_best_action(state, H, S)
+    # end
+    # action = nothing
+    # step = nothing
+    # for i in 1:n
+    #     if action == nothing
+    #         action = R_all[i]
+    #         step = S_all[i]
+    #         break
+    #     end
+    # end
+
+    # SEQUENTIAL (lazy)
     action = nothing
     step = nothing
     for S in S_all
