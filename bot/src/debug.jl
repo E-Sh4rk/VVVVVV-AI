@@ -20,7 +20,7 @@ function print_object(o::GameObject, label::String)
     println("$label: ($x,$y,$w,$h,$xs,$ys)")
 end
 
-function print_all_projectiles(simulation::GameState, truth::GameState)
+function print_all_projectiles(simulation, truth)
     if truth != nothing
         println("======= TRUTH =======")
         for p in truth.projectiles
@@ -77,7 +77,7 @@ function check_simulation(simulation::GameState, truth::GameState)
         return false
     end
     for p in simulation.projectiles
-        if (p.x > 320 && p.xs > 0) || (p.x < 0 && p.xs < 0)
+        if (p.x > PROJ_DELETED_RIGHT && p.xs > 0) || (p.x < PROJ_DELETED_LEFT && p.xs < 0)
             continue # The projetile may have been removed in the original game
         end
         found = false

@@ -20,21 +20,14 @@ function json_to_game_object(json)
     return GameObject(json["x"], json["y"], json["w"], json["h"], 0, 0)
 end
 
-# PLAYER_MAX_X_SPEED = 6
-# PLAYER_X_JUMP = 320
-
 function compute_speed_of_player(player, previous_state, xs)
     if previous_state == nothing
         return GameObject(player.x, player.y, player.w, player.h, xs, INITIAL_YS)
     end
     ys = player.y - previous_state.player.y
     # xs = player.x - previous_state.player.x
-    # if abs(xs) > PLAYER_MAX_X_SPEED
-    #     if xs > 0
-    #         xs -= PLAYER_X_JUMP
-    #     else
-    #         xs += PLAYER_X_JUMP
-    #     end
+    # if abs(xs) > 6
+    #     xs = xs > 0 ? xs - 320 : xs + 320
     # end
     xs = apply_friction_x(xs)
     return GameObject(player.x, player.y, player.w, player.h, xs, ys)
@@ -47,14 +40,21 @@ function compute_speed_of_projectile!(proj, previous_projs)
     xs = 0
     for i in 1:length(previous_projs)
         p = previous_projs[i]
-        if p.y == proj.y && (proj.x - p.x) == p.xs
-            xs = p.xs
-            deleteat!(previous_projs, i)
-            break
+        if p.y == proj.y
+            diff = proj.x - p.x
+            if diff == p.xs || (p.xs == 0 && abs(diff) == PROJ_SPEED)
+                xs = diff
+                deleteat!(previous_projs, i)
+                break
+            end
         end
     end
     if xs == 0
-        xs = proj.x < 0 ? PROJ_SPEED : -PROJ_SPEED
+        if proj.x < PROJ_DELETED_LEFT
+            xs = PROJ_SPEED
+        elseif proj.x > PROJ_DELETED_RIGHT
+            xs = -PROJ_SPEED
+        end
     end
     return GameObject(proj.x, proj.y, proj.w, proj.h, xs, 0)
 end
