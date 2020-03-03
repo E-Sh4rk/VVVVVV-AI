@@ -7,7 +7,7 @@ include("src/comm.jl")
 include("src/search.jl")
 include("src/debug.jl")
 
-DEBUG = true
+DEBUG = false
 
 function main()
     println("VBot - Bot for the Super Gravitron")

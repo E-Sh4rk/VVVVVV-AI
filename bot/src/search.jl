@@ -5,8 +5,6 @@
 H = 60 # 2 seconds
 M = 1000
 
-# TODO: parallelize the search
-
 ACTIONS = [wait, left, right]
 N = length(ACTIONS)
 LM = log(N, M)
@@ -31,15 +29,22 @@ function evaluate_state_with_search(state::GameState, H::Int, S::Int, first_acti
 end
 
 function search_best_action(state::GameState, H::Int, S::Int)
+    n = length(ACTIONS)
+    results = Array{Any}(nothing, n)
+    # Threads.@threads for i in 1:n # NOTE: uncomment for a threaded search
+    for i in 1:n
+        results[i] = evaluate_state_with_search(state, H, S, [ACTIONS[i]])
+    end
+
     max_a = nothing
     max_v = -Inf32
-    for action in ACTIONS
-        v = evaluate_state_with_search(state, H, S, [action])
-        if v > max_v
-            max_v = v
-            max_a = action
+    for i in 1:n
+        if results[i] > max_v
+            max_v = results[i]
+            max_a = ACTIONS[i]
         end
     end
+
     return max_a
 end
 
