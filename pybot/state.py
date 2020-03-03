@@ -23,22 +23,16 @@ class State:
     terminal=True
     image=None
 
-def in_collision(s1, s2):
-    top = max(s1["y"], s2["y"])
-    bottom = min(s1["y"] + s1["h"], s2["y"] + s2["h"])
-    left = max(s1["x"], s2["x"])
-    right = min(s1["x"] + s1["w"], s2["x"] + s2["w"])
-    return top < bottom and left < right
-
 def compute_speed_of_projectile(previous_json, sprite):
     sprite["xs"] = 0
     if previous_json == None:
         return
     for psprite in previous_json["proj"]:
-        if psprite["y"] == sprite["y"] and in_collision(psprite, sprite):
+        if psprite["y"] == sprite["y"]:
             diff = sprite["x"] - psprite["x"]
-            if psprite["xs"] == 0 or np.sign(diff) == np.sign(psprite["xs"]):
+            if diff == psprite["xs"] or (psprite["xs"] == 0 and abs(diff) == PROJ_MAX_SPEED):
                 sprite["xs"] = diff
+                break
     
 def compute_speed_of_character(previous_json, sprite):
     if previous_json == None:
