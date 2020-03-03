@@ -92,6 +92,8 @@ function compute_new_ys(state::GameState) # Also takes friction into account
             ys = 1
         elseif ys == 1 && state.player.y >= BOTTOM_GRAVITY_CHANGE_INTERMISSION
             ys = -1
+        elseif ys == -2
+            ys = 1
         elseif ys == 1
             ys = 3
         elseif ys == 3
