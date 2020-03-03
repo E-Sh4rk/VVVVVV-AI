@@ -8,11 +8,12 @@ include("src/search.jl")
 include("src/debug.jl")
 
 DEBUG = false
+TRAINING = true
 
 function main()
     println("VBot - Bot for the Super Gravitron")
 
-    (io, state) = initialize_game(true)
+    (io, state) = initialize_game(TRAINING)
     state = reset!(io, state)
     while true
         (action, step) = search_best_action(state, DEBUG)
