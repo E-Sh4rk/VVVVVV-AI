@@ -1,7 +1,11 @@
-include("simulation.jl")
-include("comm.jl")
-include("search.jl")
-include("debug.jl")
+# @everywhere include("src/simulation.jl")
+# include("src/comm.jl")
+# @everywhere include("src/search.jl")
+# include("src/debug.jl")
+include("src/simulation.jl")
+include("src/comm.jl")
+include("src/search.jl")
+include("src/debug.jl")
 
 DEBUG = true
 

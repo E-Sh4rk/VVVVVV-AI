@@ -1,4 +1,4 @@
-# TODO: diminush H?
+
 # H must not be too big, because the prediction become wrong after some time
 # due to the new projectiles that appear randomly in the game.
 # In particular, the initial step S should be <= 10 frames.
@@ -45,18 +45,49 @@ end
 
 function search_best_action(state::GameState, DEBUG::Bool)
     S = ceil(Int, H/LM)
+    # We plan the different tasks
+    S_all = [S]
+    while S_all[end] > 1
+        push!(S_all, S_all[end]÷2)
+    end
+    n = length(S_all)
 
-    action = search_best_action(state, H, S)
-    while action == nothing && S > 1
-        S = S÷2
+    # DISTRIBUTED
+    # # We launch them on the workers
+    # R_all = Array{Any}(nothing, n)
+    # for i in 1:n
+    #     S = S_all[i]
+    #     H = trunc(Int, LM*S)
+    #     R_all[i] = @spawn search_best_action(state, H, S)
+    # end
+    # # We wait for the result
+    # action = nothing
+    # step = nothing
+    # for i in 1:n
+    #     r = fetch(R_all[i])
+    #     if action == nothing
+    #         action = r
+    #         step = S_all[i]
+    #     end
+    # end
+
+    # SEQUENTIAL
+    action = nothing
+    step = nothing
+    for S in S_all
         H = trunc(Int, LM*S)
-        #DEBUG && println("Unable to find a solution... Try again with S=$S...")
-        action = search_best_action(state, H, S)
+        r = search_best_action(state, H, S)
+        if r != nothing
+            action = r
+            step = S
+            break
+        end
     end
 
+    # Output
     if action == nothing
         DEBUG && println("No solution.")
         return (wait, 1)
     end
-    return (action, S)
+    return (action, step)
 end

@@ -41,11 +41,7 @@ function check_simulation(simulation::GameState, truth::GameState)
     global previous_truth
     prev = previous_truth
     previous_truth = truth
-    if !are_game_objects_equivalent(simulation.player, truth.player)
-        println("Player position is wrong.")
-        print_boxes(simulation.player, truth.player)
-        return false
-    end
+
     if simulation.terminal
         if !truth.terminal
             println("(The predicted game state is wrongly terminal)")
@@ -53,7 +49,13 @@ function check_simulation(simulation::GameState, truth::GameState)
             # return false
         end
         return true
-    elseif truth.terminal
+    end
+    if !are_game_objects_equivalent(simulation.player, truth.player)
+        println("Player position is wrong.")
+        print_boxes(simulation.player, truth.player)
+        return false
+    end
+    if truth.terminal
         println("The predicted game state should be terminal!")
         truth_proj = get_proj_in_collision(truth.player, truth.projectiles)
         if truth_proj == nothing
