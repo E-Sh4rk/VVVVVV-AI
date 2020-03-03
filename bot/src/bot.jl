@@ -18,9 +18,6 @@ function main()
             state = next!(io, state, action)
             if DEBUG && !check_simulation(sim_state, state)
                 println("S=$step")
-                state = next!(io, state, wait)
-                state = next!(io, state, wait)
-                state = next!(io, state, wait)
                 readline()
             end
             if state.terminal

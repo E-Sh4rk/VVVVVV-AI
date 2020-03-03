@@ -14,9 +14,6 @@ function main()
             predicted = simulate_next(state, action)
             state = next!(io, state, action)
             if !check_simulation(predicted, state)
-                state = next!(io, state, wait)
-                state = next!(io, state, wait)
-                state = next!(io, state, wait)
                 readline()
             end
             if state.terminal
