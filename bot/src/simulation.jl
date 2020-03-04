@@ -242,6 +242,6 @@ function evaluate_state(state::GameState)
     end
     (_, min_dist²) = nearest_projectile(state)
     x = state.player.x + state.player.w/2
-    dist_from_middle = abs(MIDDLE_X-x)
-    return min_dist² - dist_from_middle*dist_from_middle/2
+    dist_from_middle² = (MIDDLE_X-x)*(MIDDLE_X-x)
+    return min_dist² - dist_from_middle²/2
 end
