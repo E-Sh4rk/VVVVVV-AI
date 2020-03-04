@@ -11,6 +11,7 @@ TOP_GRAVITY_CHANGE = 48
 BOTTOM_GRAVITY_CHANGE = 163
 TOP_GRAVITY_CHANGE_INTERMISSION = 53
 BOTTOM_GRAVITY_CHANGE_INTERMISSION = 161
+MIDDLE_X = 164
 
 @enum ACTION wait=1 left=2 right=3 suicide=4
 
@@ -236,11 +237,12 @@ function nearest_projectile(state::GameState)
     return (min_proj, min_dist)
 end
 
-# TODO: Improve it. Prefer being in the center of the screen.
 function evaluate_state(state::GameState)
     if state.terminal
         return -Inf32
     end
     (_, min_dist) = nearest_projectile(state)
-    return min_dist
+    x = state.player.x + state.player.w/2
+    dist_from_middle = abs(MIDDLE_X-x)
+    return min_dist - dist_from_middle/2
 end
