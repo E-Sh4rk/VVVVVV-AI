@@ -14,11 +14,27 @@ LM = log(AN, M)
 N = length(S)
 H = [floor(Int, LM)*s for s in S]
 
+function heuristic_dist²_no_wrap(player, proj)
+    if (proj.x + proj.w < player.x && proj.xs < 0) ||
+        (proj.x > player.x + player.w && proj.xs > 0)
+        return Inf32
+    end
+    # if (proj.y + proj.h < player.y && player.ys > 0) ||
+    #     (proj.y > player.y + player.h && player.ys < 0)
+    #     return Inf32
+    # end
+    return player_proj_dist²_no_wrap(player, proj)
+end
+
+function heuristic_dist²(player, proj)
+    return player_proj_dist_ext(heuristic_dist²_no_wrap, player, proj)
+end
+
 function evaluate_state(state::GameState)
     if state.terminal
         return -Inf32
     end
-    (_, min_dist²) = nearest_projectile(state)
+    (_, min_dist²) = nearest_projectile(heuristic_dist², state)
     # x = state.player.x + state.player.w/2
     # dist_from_middle² = (MIDDLE_X-x)*(MIDDLE_X-x)
     return min_dist² # - dist_from_middle²/2

@@ -212,29 +212,33 @@ function simulate_next(state::GameState, action::ACTION)
         player, projectiles, info)
 end
 
-function player_proj_dist²(player, proj)
-    res = player_proj_dist²_no_wrap(player, proj)
+function player_proj_dist_ext(dnw, player, proj)
+    res = dnw(player, proj)
     if player.x - CX < 0
         player = GameObject(player.x + 320, player.y, player.w, player.h,
             player.xs, player.ys)
-        res = min(res, player_proj_dist²_no_wrap(player, proj))
+        res = min(res, dnw(player, proj))
     elseif player.x - CX > 300
         player = GameObject(player.x - 320, player.y, player.w, player.h,
             player.xs, player.ys)
-        res = min(res, player_proj_dist²_no_wrap(player, proj))
+        res = min(res, dnw(player, proj))
     end
     return res
 end
 
-function nearest_projectile(state::GameState)
-    min_dist² = Inf32
+function player_proj_dist²(player, proj)
+    return player_proj_dist_ext(player_proj_dist²_no_wrap, player, proj)
+end
+
+function nearest_projectile(d, state::GameState)
+    min_dist = Inf32
     min_proj = nothing
     for proj in state.projectiles
-        dist² = player_proj_dist²(state.player, proj)
-        if dist² < min_dist²
-            min_dist² = dist²
+        dist = d(state.player, proj)
+        if dist < min_dist
+            min_dist = dist
             min_proj = proj
         end
     end
-    return (min_proj, min_dist²)
+    return (min_proj, min_dist)
 end
