@@ -35,8 +35,10 @@ function main()
                 println("(Predicted frames)")
                 readline()
             end
+            must_read_state = false
         end
         DEBUG && (sim_state = state)
+        reset = false
         for i in 1:min_step-PREDICTION
             previous_state = state
             previous_action = actions[i]
@@ -48,11 +50,12 @@ function main()
             end
             if state.terminal
                 state = reset!(io, state)
+                reset = true
                 break
             end
         end
         # Send and predict result for remaining moves
-        if PREDICTION > 0
+        if PREDICTION > 0 && !reset
             must_read_state = true
             rem_actions = actions[min_step-PREDICTION+1:min_step]
             send_move_many!(io, rem_actions)
@@ -61,8 +64,6 @@ function main()
                 previous_action = action
                 state = simulate_next(state, action)
             end
-        else
-            must_read_state = false
         end
     end
     quit_game!(io)
