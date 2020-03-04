@@ -1,21 +1,17 @@
 
 ===== SEARCH =====
 
-Horizon H = 60 (2s)
-Max number of simulations M = 1000
-Step S = H/log3(M)
+Max number of leaves M = 1000
+
+Step S
+Horizon H = floor(log3(M))*S
 
 If many paths possible, heuristics on the final position to decide
 (how close the character is from a projectile?)
 
-If no path possible, try again with S-- (or S//2) and H=log3(M)*S
+If no path possible, try again with another lower value of S
 
-Play the first move of the selected path for STEP frames.
-
-Note:
-H must not be too big, because the prediction become wrong after some time
-due to the new projectiles that appear randomly in the game.
-In particular, the initial step S should be <= 10 frames.
+When a solution is found, we should play at least the S first moves
 
 ===== PHYSICS =====
 

@@ -1,14 +1,18 @@
 
-# H must not be too big, because the prediction become wrong after some time
-# due to the new projectiles that appear randomly in the game.
-# In particular, the initial step S should be <= 10 frames.
-# H = 60 # 2 seconds
-H = 42 # NOTE: H has been decreased because of the 3 frames prediction in bot.jl
-M = 1000
-
 ACTIONS = [wait, left, right]
-N = length(ACTIONS)
-LM = log(N, M)
+M = 1000 # Max number of leaves (= max computation) for each value of S
+# Search steps (they will be all tried consecutively until a search succeed).
+# They should all be greater or divisors of the frame prediction in bot.jl.
+# S+frame_prediction should not be too high (<= 10) because the simulator
+# cannot predict new projectiles.
+S = [7, 3, 1]
+
+# Automatic parameters
+AN = length(ACTIONS)
+LM = log(AN, M)
+
+N = length(S)
+H = [floor(Int, LM)*s for s in S]
 
 function search_best_actions(state::GameState, H::Int, S::Int)
     S = min(S, H)
@@ -38,26 +42,15 @@ function search_best_actions(state::GameState, H::Int, S::Int)
 end
 
 function search_best_actions(state::GameState, min_nb_actions::Int, DEBUG::Bool)
-    S = ceil(Int, H/LM)
-    # We plan the different tasks
-    S_all = [S]
-    while S_all[end] > 1
-        push!(S_all, S_all[end]÷2)
-    end
-    n = length(S_all)
-
     # DISTRIBUTED
     # # We launch them on the workers
-    # R_all = Array{Any}(nothing, n)
-    # for i in 1:n
-    #     local S, H
-    #     S = S_all[i]
-    #     H = trunc(Int, LM*S)
-    #     R_all[i] = @spawn search_best_actions(state, H, S)
+    # R = Array{Any}(nothing, N)
+    # for i in 1:N
+    #     R[i] = @spawn search_best_actions(state, H[i], S[i])
     # end
     # # We wait for the result
     # actions = nothing
-    # for rf in R_all
+    # for rf in R
     #     (_, r) = fetch(rf)
     #     if actions == nothing
     #         actions = r
@@ -65,16 +58,13 @@ function search_best_actions(state::GameState, min_nb_actions::Int, DEBUG::Bool)
     # end
 
     # THREADED
-    # R_all = Array{Any}(nothing, n)
-    # Threads.@threads for i in 1:n
-    #     local S, H
-    #     S = S_all[i]
-    #     H = trunc(Int, LM*S)
-    #     (_, r) = search_best_actions(state, H, S)
-    #     R_all[i] = r
+    # R = Array{Any}(nothing, N)
+    # Threads.@threads for i in 1:N
+    #     (_, r) = search_best_actions(state, H[i], S[i])
+    #     R[i] = r
     # end
     # actions = nothing
-    # for r in R_all
+    # for r in R
     #     if actions == nothing
     #         actions = r
     #         break
@@ -83,9 +73,8 @@ function search_best_actions(state::GameState, min_nb_actions::Int, DEBUG::Bool)
 
     # SEQUENTIAL (lazy)
     actions = nothing
-    for S in S_all
-        H = trunc(Int, LM*S)
-        (_, actions) = search_best_actions(state, H, S)
+    for i in 1:N
+        (_, actions) = search_best_actions(state, H[i], S[i])
         actions != nothing && break
     end
 
