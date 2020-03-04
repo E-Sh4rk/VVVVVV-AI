@@ -140,24 +140,27 @@ function apply_speed_x(x, xs)
     return x + CX
 end
 
-function player_proj_in_collision(player, proj)
+function player_proj_dist²_no_wrap(player, proj)
     cx = proj.x + proj.w/2
     cy = proj.y + proj.h/2
-    radius = (proj.w + proj.h) / 4
 
     testX = min(max(cx, player.x), player.x + player.w)
     testY = min(max(cy, player.y), player.y + player.h)
 
     distX = cx - testX
     distY = cy - testY
-    distance² = distX*distX + distY*distY
 
-    return distance² <= radius*radius
+    return distX*distX + distY*distY
+end
+
+function player_proj_in_collision_no_wrap(player, proj)
+    radius = (proj.w + proj.h) / 4
+    return player_proj_dist²_no_wrap(player, proj) <= radius*radius
 end
 
 function get_proj_in_collision_no_wrap(player, projectiles)
     for proj in projectiles
-        if player_proj_in_collision(player, proj)
+        if player_proj_in_collision_no_wrap(player, proj)
             return proj
         end
     end
@@ -207,18 +210,6 @@ function simulate_next(state::GameState, action::ACTION)
 
     return GameState(state.timer + 1, terminal, state.intermission,
         player, projectiles, info)
-end
-
-function player_proj_dist²_no_wrap(player, proj)
-    pcx = player.x + player.w/2
-    pcy = player.y + player.h/2
-
-    cx = proj.x + proj.w/2
-    cy = proj.y + proj.h/2
-    distX = pcx - cx
-    distY = pcy - cy
-
-    return distX*distX + distY*distY
 end
 
 function player_proj_dist²(player, proj)

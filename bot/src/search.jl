@@ -5,7 +5,7 @@ M = 1000 # Max number of leaves (= max computation) for each value of S
 # They should all be greater or divisors of the frame prediction in bot.jl.
 # S+frame_prediction should not be too high (<= 10) because the simulator
 # cannot predict new projectiles.
-S = [3, 2, 1]
+S = [4, 3, 2, 1]
 
 # Automatic parameters
 AN = length(ACTIONS)
