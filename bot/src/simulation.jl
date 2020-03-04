@@ -247,13 +247,3 @@ function nearest_projectile(state::GameState)
     end
     return (min_proj, min_dist²)
 end
-
-function evaluate_state(state::GameState)
-    if state.terminal
-        return -Inf32
-    end
-    (_, min_dist²) = nearest_projectile(state)
-    # x = state.player.x + state.player.w/2
-    # dist_from_middle² = (MIDDLE_X-x)*(MIDDLE_X-x)
-    return min_dist² # - dist_from_middle²/2
-end

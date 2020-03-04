@@ -13,7 +13,7 @@ TRAINING = true
 # in order to start the search earlier.
 # Shouldn't be too high, because information about new projectiles
 # cannot be predicted.
-PREDICTION = 3
+PREDICTION = 2
 
 function main()
     println("VBot - Bot for the Super Gravitron")

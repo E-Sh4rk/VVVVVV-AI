@@ -5,7 +5,7 @@ M = 1000 # Max number of leaves (= max computation) for each value of S
 # They should all be greater or divisors of the frame prediction in bot.jl.
 # S+frame_prediction should not be too high (<= 10) because the simulator
 # cannot predict new projectiles.
-S = [5, 3, 1]
+S = [3, 2, 1]
 
 # Automatic parameters
 AN = length(ACTIONS)
@@ -13,6 +13,16 @@ LM = log(AN, M)
 
 N = length(S)
 H = [floor(Int, LM)*s for s in S]
+
+function evaluate_state(state::GameState)
+    if state.terminal
+        return -Inf32
+    end
+    (_, min_dist²) = nearest_projectile(state)
+    # x = state.player.x + state.player.w/2
+    # dist_from_middle² = (MIDDLE_X-x)*(MIDDLE_X-x)
+    return min_dist² # - dist_from_middle²/2
+end
 
 function search_best_actions(state::GameState, H::Int, S::Int)
     S = min(S, H)
