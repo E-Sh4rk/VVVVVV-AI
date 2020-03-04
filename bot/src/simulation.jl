@@ -211,7 +211,7 @@ function simulate_next(state::GameState, action::ACTION)
         player, projectiles, info)
 end
 
-function player_proj_dist²(player, proj)
+function player_proj_dist²_no_wrap(player, proj)
     pcx = player.x + player.w/2
     pcy = player.y + player.h/2
 
@@ -221,6 +221,22 @@ function player_proj_dist²(player, proj)
     distY = pcy - cy
 
     return distX*distX + distY*distY
+end
+
+function player_proj_dist²(player, proj)
+    res = player_proj_dist²_no_wrap(player, proj)
+    if res == nothing
+        if player.x - CX < 0
+            player = GameObject(player.x + 320, player.y, player.w, player.h,
+                player.xs, player.ys)
+            res = player_proj_dist²_no_wrap(player, proj)
+        elseif player.x - CX > 300
+            player = GameObject(player.x - 320, player.y, player.w, player.h,
+                player.xs, player.ys)
+            res = player_proj_dist²_no_wrap(player, proj)
+        end
+    end
+    return res
 end
 
 function nearest_projectile(state::GameState)
