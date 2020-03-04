@@ -5,7 +5,7 @@ M = 1000 # Max number of leaves (= max computation) for each value of S
 # They should all be greater or divisors of the frame prediction in bot.jl.
 # S+frame_prediction should not be too high (<= 10) because the simulator
 # cannot predict new projectiles.
-S = [6, 3, 1]
+S = [5, 3, 1]
 
 # Automatic parameters
 AN = length(ACTIONS)
@@ -27,9 +27,7 @@ function search_best_actions(state::GameState, H::Int, S::Int)
         state_a = state
         for i in 1:S
             state_a = simulate_next(state_a, action)
-            if state_a.terminal
-                break
-            end
+            state_a.terminal && break
         end
         (res_v, res_a) = search_best_actions(state_a, H-S, S)
         if res_a != nothing && res_v > max_v

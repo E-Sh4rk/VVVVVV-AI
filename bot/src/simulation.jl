@@ -156,14 +156,12 @@ function player_proj_in_collision(player, proj)
 end
 
 function get_proj_in_collision_no_wrap(player, projectiles)
-    res = nothing
     for proj in projectiles
         if player_proj_in_collision(player, proj)
-            res = proj
-            break
+            return proj
         end
     end
-    return res
+    return nothing
 end
 
 function get_proj_in_collision(player, projectiles)
@@ -225,16 +223,14 @@ end
 
 function player_proj_dist²(player, proj)
     res = player_proj_dist²_no_wrap(player, proj)
-    if res == nothing
-        if player.x - CX < 0
-            player = GameObject(player.x + 320, player.y, player.w, player.h,
-                player.xs, player.ys)
-            res = player_proj_dist²_no_wrap(player, proj)
-        elseif player.x - CX > 300
-            player = GameObject(player.x - 320, player.y, player.w, player.h,
-                player.xs, player.ys)
-            res = player_proj_dist²_no_wrap(player, proj)
-        end
+    if player.x - CX < 0
+        player = GameObject(player.x + 320, player.y, player.w, player.h,
+            player.xs, player.ys)
+        res = min(res, player_proj_dist²_no_wrap(player, proj))
+    elseif player.x - CX > 300
+        player = GameObject(player.x - 320, player.y, player.w, player.h,
+            player.xs, player.ys)
+        res = min(res, player_proj_dist²_no_wrap(player, proj))
     end
     return res
 end
@@ -257,7 +253,7 @@ function evaluate_state(state::GameState)
         return -Inf32
     end
     (_, min_dist²) = nearest_projectile(state)
-    x = state.player.x + state.player.w/2
-    dist_from_middle² = (MIDDLE_X-x)*(MIDDLE_X-x)
-    return min_dist² - dist_from_middle²/2
+    # x = state.player.x + state.player.w/2
+    # dist_from_middle² = (MIDDLE_X-x)*(MIDDLE_X-x)
+    return min_dist² # - dist_from_middle²/2
 end
