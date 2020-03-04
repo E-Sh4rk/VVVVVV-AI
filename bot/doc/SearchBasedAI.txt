@@ -1,7 +1,7 @@
 
 ===== SEARCH =====
 
-Max number of leaves M = 1000
+Max number of leaves M (order of magnitude: 10^3)
 
 Step S
 Horizon H = floor(log3(M))*S

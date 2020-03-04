@@ -211,7 +211,7 @@ function simulate_next(state::GameState, action::ACTION)
         player, projectiles, info)
 end
 
-function player_proj_dist(player, proj)
+function player_proj_dist²(player, proj)
     pcx = player.x + player.w/2
     pcy = player.y + player.h/2
 
@@ -219,30 +219,29 @@ function player_proj_dist(player, proj)
     cy = proj.y + proj.h/2
     distX = pcx - cx
     distY = pcy - cy
-    dist = distX*distX + distY*distY
 
-    return dist
+    return distX*distX + distY*distY
 end
 
 function nearest_projectile(state::GameState)
-    min_dist = Inf32
+    min_dist² = Inf32
     min_proj = nothing
     for proj in state.projectiles
-        dist = player_proj_dist(state.player, proj)
-        if dist < min_dist
-            min_dist = dist
+        dist² = player_proj_dist²(state.player, proj)
+        if dist² < min_dist²
+            min_dist² = dist²
             min_proj = proj
         end
     end
-    return (min_proj, min_dist)
+    return (min_proj, min_dist²)
 end
 
 function evaluate_state(state::GameState)
     if state.terminal
         return -Inf32
     end
-    (_, min_dist) = nearest_projectile(state)
+    (_, min_dist²) = nearest_projectile(state)
     x = state.player.x + state.player.w/2
     dist_from_middle = abs(MIDDLE_X-x)
-    return min_dist - dist_from_middle/2
+    return min_dist² - dist_from_middle*dist_from_middle/2
 end
