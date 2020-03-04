@@ -1,0 +1,8 @@
+
+===== TUNING OF S FOR M=1000 AND PREDICTION=2 =====
+
+After 4mn IG:
+[5,4,3,2,1]: 10.5s delay    17:48 total run
+[4,3,2,1]:   9.5s delay     +21:00
+[5,3,2,1]:   ???? delay     14:50 total run
+[3,2,1]:     ???? delay     10:24 total run
