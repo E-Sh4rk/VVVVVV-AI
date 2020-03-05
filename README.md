@@ -6,7 +6,7 @@ In order to use it, you need a [modded version of VVVVVV](https://github.com/E-S
 Just place it into the `game` directory
 (the executable should be called `VVVVVV.exe`, and all its dependencies must be present, such as `data.zip`).
 
-- The folder `bot` contains a search-based bot written in Julia (work in progress).
+- The folder `bot` contains a search-based bot written in Julia.
 
 - The folder `pybot` contains the a ML-based bot. It uses a deep Q network based on [this Python implementation](https://github.com/Kaixhin/Rainbow).
 
