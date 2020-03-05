@@ -27,7 +27,7 @@ function heuristic_dist²_no_wrap(player, proj)
 end
 
 function heuristic_dist²(player, proj)
-    return player_proj_dist_ext(heuristic_dist²_no_wrap, player, proj)
+    return player_proj_dist_with_wrap(heuristic_dist²_no_wrap, player, proj)
 end
 
 function evaluate_state(state::GameState)

@@ -19,7 +19,7 @@ CX=6
 CY=2
 (coordinates in the game are IG_X = X-CX and IG_Y = Y-CY)
 
-See player_speed.cpp for info about the computation of x-velocity
+See player_speed.cpp for info about the computation of the velocity
 and the update of the position.
 
 Vertical movements:
@@ -32,7 +32,8 @@ Arrived at 48:  0  2  5  8  10
 
 Collisions:
 
-Specificity when the player is on the sides. See collisions.cpp for more info.
+Collisions are checked AFTER applying the speed to the position of the player,
+but BEFORE the wrapping
 
 ===== GRAVITRON (intermission) =====
 

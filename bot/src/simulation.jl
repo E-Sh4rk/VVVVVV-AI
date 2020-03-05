@@ -14,8 +14,6 @@ BOTTOM_GRAVITY_CHANGE = 163
 TOP_GRAVITY_CHANGE_INTERMISSION = 53
 BOTTOM_GRAVITY_CHANGE_INTERMISSION = 161
 
-# TODO: simulate exactly behavior of collisions when wrapping (currently an overapproximation)
-
 @enum ACTION wait=1 left=2 right=3 suicide=4
 
 struct GameInfo
@@ -135,12 +133,13 @@ end
 
 function apply_speed_x(x, xs)
     x = trunc(Int, x - CX + xs)
+    xcol = x
     if x <= -10
         x += 320
     elseif x > 310
         x -= 320
     end
-    return x + CX
+    return (x + CX, xcol + CX)
 end
 
 function player_proj_dist²_no_wrap(player, proj)
@@ -172,17 +171,19 @@ end
 
 function get_proj_in_collision(player, projectiles)
     res = get_proj_in_collision_no_wrap(player, projectiles)
-    if res == nothing
-        if player.x - CX < 0
-            player = GameObject(player.x + 320, player.y, player.w, player.h,
-                player.xs, player.ys)
-            res = get_proj_in_collision_no_wrap(player, projectiles)
-        elseif player.x - CX > 300
-            player = GameObject(player.x - 320, player.y, player.w, player.h,
-                player.xs, player.ys)
-            res = get_proj_in_collision_no_wrap(player, projectiles)
-        end
-    end
+    # NOTE: Uncomment to disallow the collision glitch
+    # (will match the graphical duplication of the character)
+    # if res == nothing
+    #     if player.x - CX < 0
+    #         player = GameObject(player.x + 320, player.y, player.w, player.h,
+    #             player.xs, player.ys)
+    #         res = get_proj_in_collision_no_wrap(player, projectiles)
+    #     elseif player.x - CX > 300
+    #         player = GameObject(player.x - 320, player.y, player.w, player.h,
+    #             player.xs, player.ys)
+    #         res = get_proj_in_collision_no_wrap(player, projectiles)
+    #     end
+    # end
     return res
 end
 
@@ -205,32 +206,35 @@ function simulate_next(state::GameState, action::ACTION)
     xs = apply_friction_x(xs)
     ys = compute_new_ys(state)
     y = state.player.y + ys
-    x = apply_speed_x(state.player.x, xs)
+    (x, xcol) = apply_speed_x(state.player.x, xs)
     player = GameObject(x, y, state.player.w, state.player.h, xs, ys)
 
     # Collisions (terminal)
-    terminal = get_proj_in_collision(player, projectiles) != nothing
+    player_col = GameObject(xcol, y, state.player.w, state.player.h, xs, ys)
+    terminal = get_proj_in_collision(player_col, projectiles) != nothing
 
     return GameState(state.timer + 1, terminal, state.intermission,
         player, projectiles, info)
 end
 
-function player_proj_dist_ext(dnw, player, proj)
+function player_proj_dist_with_wrap(dnw, player, proj)
     res = dnw(player, proj)
-    if player.x - CX < 0
-        player = GameObject(player.x + 320, player.y, player.w, player.h,
-            player.xs, player.ys)
-        res = min(res, dnw(player, proj))
-    elseif player.x - CX > 300
-        player = GameObject(player.x - 320, player.y, player.w, player.h,
-            player.xs, player.ys)
-        res = min(res, dnw(player, proj))
-    end
+    # NOTE: Uncomment to disallow the collision glitch
+    # (will match the graphical duplication of the character)
+    # if player.x - CX < 0
+    #     player = GameObject(player.x + 320, player.y, player.w, player.h,
+    #         player.xs, player.ys)
+    #     res = min(res, dnw(player, proj))
+    # elseif player.x - CX > 300
+    #     player = GameObject(player.x - 320, player.y, player.w, player.h,
+    #         player.xs, player.ys)
+    #     res = min(res, dnw(player, proj))
+    # end
     return res
 end
 
 function player_proj_dist²(player, proj)
-    return player_proj_dist_ext(player_proj_dist²_no_wrap, player, proj)
+    return player_proj_dist_with_wrap(player_proj_dist²_no_wrap, player, proj)
 end
 
 function nearest_projectile(d, state::GameState)
