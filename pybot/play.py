@@ -6,10 +6,11 @@ import torch
 from agent import Agent
 from cmdparser import parser, init_torch
 
-SLEEP = 0
 SHOW_MATRIX = True
-USE_ENV_ENGINE = True
 TRAINING = True
+
+SLEEP = 0
+USE_ENV_ENGINE = True
 
 if USE_ENV_ENGINE:
     args = parser.parse_args()
