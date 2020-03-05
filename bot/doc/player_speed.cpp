@@ -80,3 +80,17 @@ applyfriction(t, game.inertia, 0.25f); // NOTE: inertia = 1.1f;
 
 entities[t].newxp = entities[t].xp + entities[t].vx; // NOTE: int conversion
 entities[t].newyp = entities[t].yp + entities[t].vy; // NOTE: int conversion
+
+/////////////////////////////////
+
+if (obj.entities[i].xp <= -10)
+{
+    obj.entities[i].xp += 320;
+}
+else
+{
+    if (obj.entities[i].xp > 310)
+    {
+        obj.entities[i].xp -= 320;
+    }
+}

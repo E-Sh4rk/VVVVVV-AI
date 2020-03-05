@@ -19,10 +19,8 @@ CX=6
 CY=2
 (coordinates in the game are IG_X = X-CX and IG_Y = Y-CY)
 
-See player_speed.cpp for info about the computation of velocity.
-
--4 or less  ==> += 320		(IG_X <= -10)
-317 or more ==> -= 320		(IG_X > 310)
+See player_speed.cpp for info about the computation of x-velocity
+and the update of the position.
 
 Vertical movements:
 

@@ -14,7 +14,7 @@ class ACTION(Enum):
     RIGHT=2
     SUICIDE=3
 
-ACTION_MAP = [ "", "l", "r", "s" ]
+ACTION_MAP = [ "w", "l", "r", "s" ]
 
 def send_move(io, action):
     cmd = ACTION_MAP[action._value_] + os.linesep

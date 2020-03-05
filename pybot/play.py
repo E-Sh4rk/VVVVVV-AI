@@ -7,7 +7,7 @@ from agent import Agent
 from cmdparser import parser, init_torch
 
 SLEEP = 0
-SHOW_MATRIX = False
+SHOW_MATRIX = True
 USE_ENV_ENGINE = True
 TRAINING = True
 

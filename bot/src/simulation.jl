@@ -3,15 +3,18 @@ PROJ_SPEED = 7
 PROJ_DELETED_LEFT = -20
 PROJ_DELETED_RIGHT = 320
 
+MIDDLE_X = 164
 X_FRICTION = 1.1f0
 XS_MAX = 6f0
 CX = 6
+
 INITIAL_YS = 0
 TOP_GRAVITY_CHANGE = 48
 BOTTOM_GRAVITY_CHANGE = 163
 TOP_GRAVITY_CHANGE_INTERMISSION = 53
 BOTTOM_GRAVITY_CHANGE_INTERMISSION = 161
-MIDDLE_X = 164
+
+# TODO: simulate exactly behavior of collisions when wrapping (currently an overapproximation)
 
 @enum ACTION wait=1 left=2 right=3 suicide=4
 

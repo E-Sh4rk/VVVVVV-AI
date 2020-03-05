@@ -10,7 +10,7 @@ if (tpoint.x < 0)
     drawRect = sprites_rect;
     drawRect.x += tpoint.x;
     drawRect.y += tpoint.y;
-    BlitSurfaceColoured(flipsprites[obj.entities[i].drawframe],NULL, backBuffer, &drawRect, ct);
+    BlitSurfaceColoured(sprites[obj.entities[i].drawframe],NULL, backBuffer, &drawRect, ct);
 }
 if (tpoint.x > 300)
 {
@@ -18,5 +18,5 @@ if (tpoint.x > 300)
     drawRect = sprites_rect;
     drawRect.x += tpoint.x;
     drawRect.y += tpoint.y;
-    BlitSurfaceColoured(flipsprites[obj.entities[i].drawframe],NULL, backBuffer, &drawRect, ct);
+    BlitSurfaceColoured(sprites[obj.entities[i].drawframe],NULL, backBuffer, &drawRect, ct);
 }
