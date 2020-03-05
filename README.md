@@ -1,8 +1,8 @@
 # VVVVVV-AI
 
-This repo contains bots for the super gravitron of [VVVVVV](https://github.com/TerryCavanagh/VVVVVV/).
+This repo contains bots for the Super Gravitron of [VVVVVV](https://github.com/TerryCavanagh/VVVVVV/).
 
-In order to use it, you need a [modded version of VVVVVV](https://github.com/E-Sh4rk/VVVVVV) that allows control of the game from an external program.
+In order to use them, you need a [modded version of VVVVVV](https://github.com/E-Sh4rk/VVVVVV) that allows control of the game from an external program.
 Just place it into the `game` directory
 (the executable should be called `VVVVVV.exe`, and all its dependencies must be present, such as `data.zip`).
 
