@@ -16,7 +16,7 @@ This bot relies on a deep Q network based on [this Python implementation](https:
 
 ## Running the bot
 
-Just open a terminal in this directory and run `python play.py --model results/canonical/1875/model.pth` (the game must be present in `../game`).
+Just open a terminal in this directory and run `python play.py --model results/canonical/1875/model.pth` (the [modded version of the game](https://github.com/E-Sh4rk/VVVVVV) must be present in `../game`).
 
 You can use another model, but in this case do not forget to specify the right architecture (`--architecture` and `--hidden-size`).
 You can also optionally activate cuDNN by using the flag `--enable-cudnn`.

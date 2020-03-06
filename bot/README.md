@@ -6,7 +6,7 @@
 
 ## Running the bot
 
-Just open a terminal in this directory and run `julia --project bot.jl` (the game must be present in `../game`).
+Just open a terminal in this directory and run `julia --project bot.jl` (the [modded version of the game](https://github.com/E-Sh4rk/VVVVVV) must be present in `../game`).
 
 You can customize the global parameters at the top of `bot.jl`:
 - If `DEBUG` is true, the bot will monitor simulations (= compare them with the truth) and log any issue found.
