@@ -5,6 +5,9 @@ M = 1000 # Max number of leaves (= max computation) for each value of S
 # They should all be greater or divisors of the frame prediction in bot.jl.
 # S+frame_prediction should not be too high (<= 10) because the simulator
 # cannot predict new projectiles.
+# High values correspond to long-term but unprecise decisions.
+# 4 seems to be a good compromise (not too high so no major simulation errors,
+# and the inertia only applies after 5+ consecutive moves in a direction).
 S = [4, 3, 2, 1]
 
 # Automatic parameters
@@ -36,14 +39,15 @@ function heuristic_dist²(player, proj)
     return player_proj_dist_with_wrap(heuristic_dist²_no_wrap, player, proj)
 end
 
+# The evaluation function mostly impacts short-term decisions (small value of S),
+# thus it should not feature any long-term considerations such as
+# 'the character should be close to the center of the screen'.
 function evaluate_state(state::GameState)
     if state.terminal
         return -Inf32
     end
     (_, min_dist²) = nearest_projectile(heuristic_dist², state)
-    # x = state.player.x + state.player.w/2
-    # dist_from_middle² = (MIDDLE_X-x)*(MIDDLE_X-x)
-    return min_dist² # - dist_from_middle²/2
+    return min_dist²
 end
 
 function search_best_actions(state::GameState, H::Int, S::Int)
