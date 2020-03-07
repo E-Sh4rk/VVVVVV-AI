@@ -9,10 +9,8 @@ XS_MAX = 6f0
 CX = 6
 
 INITIAL_YS = 0
-TOP_GRAVITY_CHANGE = 48
-BOTTOM_GRAVITY_CHANGE = 163
-TOP_GRAVITY_CHANGE_INTERMISSION = 53
-BOTTOM_GRAVITY_CHANGE_INTERMISSION = 161
+TOP_GRAVITY_CHANGE = 53
+BOTTOM_GRAVITY_CHANGE = 161
 
 @enum ACTION wait=1 left=2 right=3 suicide=4
 
@@ -88,11 +86,11 @@ function compute_new_ys(state::GameState) # Also takes friction into account
 
     if state.intermission
 
-        if ys == -10 && state.player.y <= TOP_GRAVITY_CHANGE_INTERMISSION
+        if ys == -10 && state.player.y <= TOP_GRAVITY_CHANGE
             ys = -2
-        elseif ys == 10 && state.player.y >= BOTTOM_GRAVITY_CHANGE_INTERMISSION
+        elseif ys == 10 && state.player.y >= BOTTOM_GRAVITY_CHANGE
             ys = 1
-        elseif ys == 1 && state.player.y >= BOTTOM_GRAVITY_CHANGE_INTERMISSION
+        elseif ys == 1 && state.player.y >= BOTTOM_GRAVITY_CHANGE
             ys = -1
         elseif ys == -2
             ys = 1
@@ -114,10 +112,14 @@ function compute_new_ys(state::GameState) # Also takes friction into account
 
     else
 
-        if state.player.y <= TOP_GRAVITY_CHANGE
-            ys = ys == 0 ? 2 : 0
-        elseif state.player.y >= BOTTOM_GRAVITY_CHANGE
-            ys = ys == 0 ? -2 : 0
+        if ys == -10 && state.player.y <= TOP_GRAVITY_CHANGE
+            ys = 0
+        elseif ys == 0 && state.player.y <= TOP_GRAVITY_CHANGE
+            ys = 2
+        elseif ys == 10 && state.player.y >= BOTTOM_GRAVITY_CHANGE
+            ys = 0
+        elseif ys == 0 && state.player.y >= BOTTOM_GRAVITY_CHANGE
+            ys = -2
         elseif abs(ys) == 2
             ys = sign(ys) * 5
         elseif abs(ys) == 5

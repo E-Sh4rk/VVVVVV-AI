@@ -19,10 +19,16 @@ function heuristic_dist²_no_wrap(player, proj)
         (proj.x > player.x + player.w && proj.xs > 0)
         return Inf32
     end
-    # if (proj.y + proj.h < player.y && player.ys > 0) ||
-    #     (proj.y > player.y + player.h && player.ys < 0)
-    #     return Inf32
-    # end
+    if proj.y + proj.h < player.y && player.ys > 0
+        player_line_dist = max(0, BOTTOM_GRAVITY_CHANGE - player.ys)
+        d = 4*player_line_dist*player_line_dist
+        return d + player_proj_dist²_no_wrap(player, proj)
+    end
+    if proj.y > player.y + player.h && player.ys < 0
+        player_line_dist = max(0, player.ys - TOP_GRAVITY_CHANGE)
+        d = 4*player_line_dist*player_line_dist
+        return d + player_proj_dist²_no_wrap(player, proj)
+    end
     return player_proj_dist²_no_wrap(player, proj)
 end
 
