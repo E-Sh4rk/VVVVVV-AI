@@ -82,7 +82,7 @@ function search_best_actions(state::GameState, H::Int, S::Int, prefer_center=fal
             state_a.terminal && break
         end
         (res_v, res_a) = search_best_actions(state_a, H-S, S)
-        preferred = prefer_center && res_v >= PREFER_CENTER_THRESHOLD &&
+        preferred = prefer_center && res_v >= PREFER_CENTER_V_THRESHOLD &&
             abs(state.player.x - X_INITIAL) >= PREFER_CENTER_X_THRESHOLD &&
             abs(state_a.player.x - X_INITIAL) < abs(state.player.x - X_INITIAL)
         if res_a != nothing && (res_v > max_v || preferred)
