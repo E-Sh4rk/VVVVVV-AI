@@ -60,9 +60,9 @@ function check_simulation(simulation::GameState, truth::GameState)
     end
     # PROJECTILES
     for p in simulation.projectiles
-        if (p.x > PROJ_DELETED_RIGHT && p.xs > 0) || (p.x < PROJ_DELETED_LEFT && p.xs < 0)
-            continue # The projectile may have been removed in the original game
-        end
+        # if (p.x > PROJ_DELETED_RIGHT && p.xs > 0) || (p.x < PROJ_DELETED_LEFT && p.xs < 0)
+        #     continue # The projectile may have been removed in the original game
+        # end
         found = false
         for pt in truth.projectiles
             if are_game_objects_equivalent(p, pt)

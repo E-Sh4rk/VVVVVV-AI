@@ -22,7 +22,7 @@ end
 
 function compute_speed_of_player(player, previous_state, xs)
     if previous_state == nothing
-        return GameObject(player.x, player.y, player.w, player.h, xs, INITIAL_YS)
+        return GameObject(player.x, player.y, player.w, player.h, xs, YS_INITIAL)
     end
     ys = player.y - previous_state.player.y
     # xs = player.x - previous_state.player.x
@@ -38,14 +38,17 @@ function compute_speed_of_projectile!(proj, previous_projs)
         return proj
     end
     xs = 0
-    for i in 1:length(previous_projs)
-        p = previous_projs[i]
-        if p.y == proj.y
-            diff = proj.x - p.x
-            if diff == p.xs || (p.xs == 0 && abs(diff) == PROJ_SPEED)
-                xs = diff
-                deleteat!(previous_projs, i)
-                break
+    if proj.x >= PROJ_DELETED_LEFT - PROJ_SPEED &&
+       proj.x <= PROJ_DELETED_RIGHT + PROJ_SPEED
+        for i in 1:length(previous_projs)
+            p = previous_projs[i]
+            if p.y == proj.y
+                diff = proj.x - p.x
+                if diff == p.xs || (p.xs == 0 && abs(diff) == PROJ_SPEED)
+                    xs = diff
+                    deleteat!(previous_projs, i)
+                    break
+                end
             end
         end
     end
@@ -148,7 +151,7 @@ end
 
 function reset!(io, state)
     if !state.terminal
-        state = next!(io, nothing, suicide)
+        state = next!(io, state, suicide)
         @assert state.terminal
     end
     return wait_for_new_game!(io, state)

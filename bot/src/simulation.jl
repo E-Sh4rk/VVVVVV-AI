@@ -3,11 +3,13 @@ PROJ_SPEED = 7
 PROJ_DELETED_LEFT = -20
 PROJ_DELETED_RIGHT = 320
 
+X_INITIAL = 158
 X_FRICTION = 1.1f0
+X_WRAP = 320
 XS_MAX = 6f0
 CX = 6
 
-INITIAL_YS = 0
+YS_INITIAL = 0
 TOP_GRAVITY_CHANGE = 53
 BOTTOM_GRAVITY_CHANGE = 161
 
@@ -136,9 +138,9 @@ function apply_speed_x(x, xs)
     x = trunc(Int, x - CX + xs)
     xcol = x
     if x <= -10
-        x += 320
+        x += X_WRAP
     elseif x > 310
-        x -= 320
+        x -= X_WRAP
     end
     return (x + CX, xcol + CX)
 end
@@ -176,11 +178,11 @@ function get_proj_in_collision(player, projectiles)
     # (will match the graphical duplication of the character)
     # if res == nothing
     #     if player.x - CX < 0
-    #         player = GameObject(player.x + 320, player.y, player.w, player.h,
+    #         player = GameObject(player.x + X_WRAP, player.y, player.w, player.h,
     #             player.xs, player.ys)
     #         res = get_proj_in_collision_no_wrap(player, projectiles)
     #     elseif player.x - CX > 300
-    #         player = GameObject(player.x - 320, player.y, player.w, player.h,
+    #         player = GameObject(player.x - X_WRAP, player.y, player.w, player.h,
     #             player.xs, player.ys)
     #         res = get_proj_in_collision_no_wrap(player, projectiles)
     #     end
@@ -197,6 +199,10 @@ function simulate_next(state::GameState, action::ACTION)
     # Projectiles
     projectiles = []
     for proj in state.projectiles
+        if (proj.xs > 0 && proj.x > PROJ_DELETED_RIGHT) ||
+           (proj.xs < 0 && proj.x < PROJ_DELETED_LEFT)
+           continue
+        end
         p = GameObject(proj.x + proj.xs, proj.y + proj.ys,
             proj.w, proj.h, proj.xs, proj.ys)
         push!(projectiles, p)
@@ -223,11 +229,11 @@ function player_proj_dist_with_wrap(dnw, player, proj)
     # NOTE: Uncomment to disallow the collision glitch
     # (will match the graphical duplication of the character)
     # if player.x - CX < 0
-    #     player = GameObject(player.x + 320, player.y, player.w, player.h,
+    #     player = GameObject(player.x + X_WRAP, player.y, player.w, player.h,
     #         player.xs, player.ys)
     #     res = min(res, dnw(player, proj))
     # elseif player.x - CX > 300
-    #     player = GameObject(player.x - 320, player.y, player.w, player.h,
+    #     player = GameObject(player.x - X_WRAP, player.y, player.w, player.h,
     #         player.xs, player.ys)
     #     res = min(res, dnw(player, proj))
     # end

@@ -10,6 +10,14 @@ M = 1000 # Max number of leaves (= max computation) for each value of S
 # and the inertia only applies after 5+ consecutive moves in a direction).
 S = [4, 3, 2, 1]
 
+# Minimal distance from the center starting from which
+# a bias towards the center is setup.
+# Set to Inf32 to completely disable.
+PREFER_CENTER_X_THRESHOLD = Inf32
+# Minimal state value required to allow bias towards the center.
+# A low value can result in more deaths.
+PREFER_CENTER_V_THRESHOLD = 2500 # 50 * 50
+
 # Automatic parameters
 AN = length(ACTIONS)
 LM = log(AN, M)
@@ -18,8 +26,16 @@ N = length(S)
 H = [floor(Int, LM)*s for s in S]
 
 function heuristic_dist²_no_wrap(player, proj)
-    if (proj.x + proj.w < player.x && proj.xs < 0) ||
-        (proj.x > player.x + player.w && proj.xs > 0)
+    if proj.x + proj.w < player.x && proj.xs < 0
+        # player = GameObject(player.x - X_WRAP, player.y, player.w, player.h,
+        #                     player.xs, player.ys)
+        # return player_proj_dist²_no_wrap(player, proj)
+        return Inf32
+    end
+    if proj.x > player.x + player.w && proj.xs > 0
+        # player = GameObject(player.x + X_WRAP, player.y, player.w, player.h,
+        #                     player.xs, player.ys)
+        # return player_proj_dist²_no_wrap(player, proj)
         return Inf32
     end
     if proj.y + proj.h < player.y && player.ys > 0
@@ -50,7 +66,7 @@ function evaluate_state(state::GameState)
     return min_dist²
 end
 
-function search_best_actions(state::GameState, H::Int, S::Int)
+function search_best_actions(state::GameState, H::Int, S::Int, prefer_center=false)
     S = min(S, H)
     if state.terminal
         return (-Inf32, nothing)
@@ -66,7 +82,10 @@ function search_best_actions(state::GameState, H::Int, S::Int)
             state_a.terminal && break
         end
         (res_v, res_a) = search_best_actions(state_a, H-S, S)
-        if res_a != nothing && res_v > max_v
+        preferred = prefer_center && res_v >= PREFER_CENTER_THRESHOLD &&
+            abs(state.player.x - X_INITIAL) >= PREFER_CENTER_X_THRESHOLD &&
+            abs(state_a.player.x - X_INITIAL) < abs(state.player.x - X_INITIAL)
+        if res_a != nothing && (res_v > max_v || preferred)
             max_v = res_v
             push!(res_a, (action, S))
             max_a = res_a
@@ -80,7 +99,7 @@ function search_best_actions(state::GameState, min_nb_actions::Int, DEBUG::Bool)
     # # We launch them on the workers
     # R = Array{Any}(nothing, N)
     # for i in 1:N
-    #     R[i] = @spawn search_best_actions(state, H[i], S[i])
+    #     R[i] = @spawn search_best_actions(state, H[i], S[i], true)
     # end
     # # We wait for the result
     # actions = nothing
@@ -94,7 +113,7 @@ function search_best_actions(state::GameState, min_nb_actions::Int, DEBUG::Bool)
     # THREADED
     # R = Array{Any}(nothing, N)
     # Threads.@threads for i in 1:N
-    #     (_, r) = search_best_actions(state, H[i], S[i])
+    #     (_, r) = search_best_actions(state, H[i], S[i], true)
     #     R[i] = r
     # end
     # actions = nothing
@@ -108,7 +127,7 @@ function search_best_actions(state::GameState, min_nb_actions::Int, DEBUG::Bool)
     # SEQUENTIAL (lazy)
     actions = nothing
     for i in 1:N
-        (_, actions) = search_best_actions(state, H[i], S[i])
+        (_, actions) = search_best_actions(state, H[i], S[i], true)
         actions != nothing && break
     end
 
