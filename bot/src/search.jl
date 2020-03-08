@@ -12,11 +12,13 @@ S = [4, 3, 2, 1]
 
 # Minimal distance from the center starting from which
 # a bias towards the center is setup.
-# Set to Inf32 to completely disable.
-PREFER_CENTER_X_THRESHOLD = Inf32
+# Set to Inf32 to disable completely.
+# NOTE: Disabling bias toward center can improve the results, 
+# but it will be less nice to watch.
+PREFER_CENTER_X_THRESHOLD = 50
 # Minimal state value required to allow bias towards the center.
 # A low value can result in more deaths.
-PREFER_CENTER_V_THRESHOLD = 2500 # 50 * 50
+PREFER_CENTER_V_THRESHOLD = 40000 # 200 * 200
 
 # Automatic parameters
 AN = length(ACTIONS)
@@ -73,8 +75,11 @@ function search_best_actions(state::GameState, H::Int, S::Int, prefer_center=fal
     elseif S <= 0
         return (evaluate_state(state), [])
     end
+    prefer_center = prefer_center &&
+                    abs(state.player.x - X_INITIAL) >= PREFER_CENTER_X_THRESHOLD
     max_v = -Inf32
     max_a = nothing
+    only_moves_to_center = false
     for action in ACTIONS
         state_a = state
         for i in 1:S
@@ -82,10 +87,15 @@ function search_best_actions(state::GameState, H::Int, S::Int, prefer_center=fal
             state_a.terminal && break
         end
         (res_v, res_a) = search_best_actions(state_a, H-S, S)
-        preferred = prefer_center && res_v >= PREFER_CENTER_V_THRESHOLD &&
-            abs(state.player.x - X_INITIAL) >= PREFER_CENTER_X_THRESHOLD &&
+        if !only_moves_to_center && prefer_center &&
+            res_v >= PREFER_CENTER_V_THRESHOLD &&
             abs(state_a.player.x - X_INITIAL) < abs(state.player.x - X_INITIAL)
-        if res_a != nothing && (res_v > max_v || preferred)
+            only_moves_to_center = true
+            max_v = -Inf32
+        end
+        if res_a != nothing && res_v > max_v &&
+           (!only_moves_to_center ||
+           abs(state_a.player.x - X_INITIAL) < abs(state.player.x - X_INITIAL))
             max_v = res_v
             push!(res_a, (action, S))
             max_a = res_a
