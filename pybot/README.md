@@ -28,3 +28,11 @@ You can customize the global parameters at the top of `play.py`:
 ## Training
 
 Please refer to `training.txt`. Note that the training can take a lot of RAM (about 10 Go with the default configuration).
+
+Two possible architectures are available (you can of course make your own one in `model.py`):
+- `canonical`: 3 convolution layers with a final output size of `4928`, followed by two dense layers. Should be used with `hidden_size=512`.
+- `canonical-`: Same as `canonical`, but the first convolution has a bigger stride, leading to an output size of `1408` instead of `4928`. Should be used with `hidden_size=256`. This architecture is about 8x lighter than `canonical`. It learns slightly faster at the beginning, but seems to struggle more after.
+
+## Ideas for improvement
+
+- Currently, the image given as input to the DQN has no information about the intertia of the character (it only indicates its position and velocity). In VVVVVV, inertia appears when the player goes left or right for at least 5 consecutive frames. The information whether the player has inertia or not should be added to the input of the DQN.
