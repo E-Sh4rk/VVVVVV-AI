@@ -13,14 +13,13 @@ If no path possible, try again with another lower value of S
 
 When a solution is found, we should play at least the S first moves
 
-===== PHYSICS =====
+===== PLAYER SPEED IN SUPER GRAVITRON =====
 
 CX=6
 CY=2
 (coordinates in the game are IG_X = X-CX and IG_Y = Y-CY)
 
-See player_speed.cpp for info about the computation of the velocity
-and the update of the position.
+See player_speed.cpp for info about the computation of the velocity and position.
 
 Vertical movements:
 
@@ -36,8 +35,6 @@ Collisions are checked AFTER applying the speed to the position of the player,
 but BEFORE the wrapping
 
 ===== GRAVITRON (intermission) =====
-
-How to detect intermission Gravitron? Lines have different widths.
 
 Vertical movements:
 
