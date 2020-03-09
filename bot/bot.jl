@@ -8,7 +8,7 @@ include("src/search.jl")
 include("src/debug.jl")
 
 DEBUG = false
-TRAINING = false
+TRAINING = true
 # Number of frames that should be predicted in advance
 # in order to start the search earlier.
 # Shouldn't be too high, because information about new projectiles

@@ -1,6 +1,6 @@
 
 ACTIONS = [wait, left, right]
-M = 1000 # Max number of leaves (= max computation) for each value of S
+M = 1000 # Max number of leaves (= max amount of computation) for each value of S
 # Search steps (they will be all tried consecutively until a search succeed).
 # They should all be greater or divisors of the frame prediction in bot.jl.
 # S+frame_prediction should not be too high (<= 10) because the simulator
@@ -11,14 +11,14 @@ M = 1000 # Max number of leaves (= max computation) for each value of S
 S = [4, 3, 2, 1]
 
 # Minimal distance from the center starting from which
-# a bias towards the center is setup.
+# moves in direction of the center are prefered.
 # Set to Inf32 to disable completely.
-# NOTE: Disabling bias toward center can improve the results, 
-# but it will be less nice to watch.
-PREFER_CENTER_X_THRESHOLD = 50
-# Minimal state value required to allow bias towards the center.
+# NOTE: Disabling the bias toward the center may improve the results,
+# but the character will be very likely to stay at the extermities.
+PREFER_CENTER_X_THRESHOLD = Inf32 # 50
+# Minimal state value required to allow the bias towards the center.
 # A low value can result in more deaths.
-PREFER_CENTER_V_THRESHOLD = 40000 # 200 * 200
+PREFER_CENTER_V_THRESHOLD = 40000 # = 200 * 200
 
 # Automatic parameters
 AN = length(ACTIONS)
