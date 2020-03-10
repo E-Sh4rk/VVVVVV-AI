@@ -3,11 +3,11 @@ from __future__ import division
 from collections import namedtuple
 import numpy as np
 import torch
-from state import NB_CHANNELS, HEIGHT_MULITPLE_OF, WIDTH_MULITPLE_OF
+from state import NB_CHANNELS, HEIGHT_MULTIPLE_OF, WIDTH_MULTIPLE_OF
 
 
 Transition = namedtuple('Transition', ('timestep', 'state', 'action', 'reward', 'nonterminal'))
-blank_trans = Transition(0, torch.zeros(NB_CHANNELS, HEIGHT_MULITPLE_OF, WIDTH_MULITPLE_OF, dtype=torch.uint8), None, 0, False)
+blank_trans = Transition(0, torch.zeros(NB_CHANNELS, HEIGHT_MULTIPLE_OF, WIDTH_MULTIPLE_OF, dtype=torch.uint8), None, 0, False)
 
 def flatten(l):
   out = []

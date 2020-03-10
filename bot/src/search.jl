@@ -11,7 +11,7 @@ M = 1000 # Max number of leaves (= max amount of computation) for each value of 
 S = [4, 3, 2, 1]
 
 # Minimal distance from the center starting from which
-# moves in direction of the center are prefered.
+# moves in direction of the center are preferred.
 # Set to Inf32 to disable completely.
 # NOTE: Disabling the bias toward the center may improve the results,
 # but the character will be very likely to stay at the extermities.
