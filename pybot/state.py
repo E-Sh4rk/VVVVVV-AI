@@ -11,8 +11,8 @@ PROJ_MAX_SPEED = 7
 PROJ_X_START_OFFSET = 150
 
 DOWNSCALE = 3
-HEIGHT_MULITPLE_OF = 44 # 42
-WIDTH_MULITPLE_OF = 116
+HEIGHT_MULTIPLE_OF = 44 # 42
+WIDTH_MULTIPLE_OF = 116
 NB_CHANNELS = 3
 
 LINE1_ADJUST = 0 # 1
@@ -73,8 +73,8 @@ def generate_matrix(prev_json, json):
                lines[1]["x"]+lines[1]["w"])
     n = xmax-xmin
     m = ymax-ymin
-    height_mult = HEIGHT_MULITPLE_OF * DOWNSCALE
-    width_mult = WIDTH_MULITPLE_OF * DOWNSCALE
+    height_mult = HEIGHT_MULTIPLE_OF * DOWNSCALE
+    width_mult = WIDTH_MULTIPLE_OF * DOWNSCALE
     npad = (width_mult - (n % width_mult)) % width_mult
     mpad = (height_mult - (m % height_mult)) % height_mult
     m += mpad

@@ -3,7 +3,7 @@ from collections import deque
 import random
 import cv2
 import torch
-from state import display_matrix, NB_CHANNELS, HEIGHT_MULITPLE_OF, WIDTH_MULITPLE_OF
+from state import display_matrix, NB_CHANNELS, HEIGHT_MULTIPLE_OF, WIDTH_MULTIPLE_OF
 from comm import initialize_game, reset_game, next_step, ACTION
 
 FSKIP = 2
@@ -42,7 +42,7 @@ class Env():
 
   def _reset_buffer(self):
     for _ in range(self.window*NB_CHANNELS):
-      self.state_buffer.append(torch.zeros(HEIGHT_MULITPLE_OF, WIDTH_MULITPLE_OF, device=self.device))
+      self.state_buffer.append(torch.zeros(HEIGHT_MULTIPLE_OF, WIDTH_MULTIPLE_OF, device=self.device))
 
   def _append_state_to_buffer(self, observation):
       # observation = self._get_state()

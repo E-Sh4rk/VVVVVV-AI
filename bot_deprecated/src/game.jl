@@ -2,7 +2,7 @@
 import JSON
 
 DOWNSCALE = 4
-HEIGHT_MULITPLE_OF = 42
+HEIGHT_MULTIPLE_OF = 42
 NB_CHANNELS = 3
 
 macro with_framerate(framerate, expr)
@@ -47,7 +47,7 @@ function generate_matrix(json)
                lines[2]["x"]+lines[2]["w"])
     n = xmax-xmin
     m = ymax-ymin
-    mpad = (HEIGHT_MULITPLE_OF - (m%HEIGHT_MULITPLE_OF)) % HEIGHT_MULITPLE_OF
+    mpad = (HEIGHT_MULTIPLE_OF - (m%HEIGHT_MULTIPLE_OF)) % HEIGHT_MULTIPLE_OF
     m += mpad
     y_offset = mpad ÷ 2
     M = zeros(UInt8, n, m, NB_CHANNELS)

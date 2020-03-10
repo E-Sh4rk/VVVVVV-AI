@@ -134,7 +134,7 @@ function main()
     # try
         open(`$VVVVVV_PATH`, "r+") do io
             state = initialize_game!(io)
-            println("VVVVVV instance initalized.")
+            println("VVVVVV instance initialized.")
             if TRAIN
                 train(io, state)
             else
